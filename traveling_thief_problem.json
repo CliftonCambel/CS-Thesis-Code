@@ -1,0 +1,138 @@
+{
+    "cities": [
+        {
+            "id": 0,
+            "coordinates": [
+                28,
+                7
+            ]
+        },
+        {
+            "id": 1,
+            "coordinates": [
+                69,
+                53
+            ]
+        },
+        {
+            "id": 2,
+            "coordinates": [
+                97,
+                75
+            ]
+        },
+        {
+            "id": 3,
+            "coordinates": [
+                56,
+                43
+            ]
+        },
+        {
+            "id": 4,
+            "coordinates": [
+                3,
+                95
+            ]
+        }
+    ],
+    "items": [
+        {
+            "id": 0,
+            "city": 3,
+            "value": 34,
+            "weight": 2
+        },
+        {
+            "id": 1,
+            "city": 1,
+            "value": 81,
+            "weight": 3
+        },
+        {
+            "id": 2,
+            "city": 1,
+            "value": 25,
+            "weight": 3
+        },
+        {
+            "id": 3,
+            "city": 2,
+            "value": 30,
+            "weight": 3
+        },
+        {
+            "id": 4,
+            "city": 2,
+            "value": 70,
+            "weight": 1
+        },
+        {
+            "id": 5,
+            "city": 3,
+            "value": 67,
+            "weight": 2
+        },
+        {
+            "id": 6,
+            "city": 3,
+            "value": 11,
+            "weight": 4
+        },
+        {
+            "id": 7,
+            "city": 3,
+            "value": 71,
+            "weight": 8
+        },
+        {
+            "id": 8,
+            "city": 2,
+            "value": 54,
+            "weight": 2
+        },
+        {
+            "id": 9,
+            "city": 3,
+            "value": 74,
+            "weight": 6
+        }
+    ],
+    "distances": [
+        [
+            0,
+            62,
+            97,
+            46,
+            91
+        ],
+        [
+            62,
+            0,
+            36,
+            16,
+            78
+        ],
+        [
+            97,
+            36,
+            0,
+            52,
+            96
+        ],
+        [
+            46,
+            16,
+            52,
+            0,
+            74
+        ],
+        [
+            91,
+            78,
+            96,
+            74,
+            0
+        ]
+    ]
+}
