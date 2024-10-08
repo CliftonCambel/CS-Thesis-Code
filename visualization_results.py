@@ -22,14 +22,14 @@ def plot_histograms(results,output_filename):
     plt.figure(figsize=(12, 6))
 
     plt.subplot(1, 2, 1)
-    plt.hist(ob_values, bins=2000, color='blue', edgecolor='black')
+    plt.hist(ob_values, bins=200, color='blue', edgecolor='black')
     plt.title('Histogram of OB Values')
     plt.xlabel('OB Value')
     plt.ylabel('Frequency')
 
     # Plot histogram for Computing Times
     plt.subplot(1, 2, 2)
-    plt.hist(computing_times, bins=2000, color='green', edgecolor='black')
+    plt.hist(computing_times, bins=200, color='green', edgecolor='black')
     plt.title('Histogram of Computing Times')
     plt.xlabel('Computing Time (seconds)')
     plt.ylabel('Frequency')

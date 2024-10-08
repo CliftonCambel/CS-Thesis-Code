@@ -41,7 +41,7 @@ def random_tour_and_packing(ttp):
     vmax = 1.0
     vmin = 0.1
     W = num_items*50/2 #might change.
-    R = 1.0
+    R = 1.0 #might change
 
     random_tour = list(range(1, num_cities))  # Exclude starting city (0) for shuffling
     random.shuffle(random_tour)
