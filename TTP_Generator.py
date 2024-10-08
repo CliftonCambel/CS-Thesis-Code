@@ -19,8 +19,9 @@ def generate_items(num_cities, num_items):
     items = []
     for _ in range(num_items):
         city_index = random.randint(1, num_cities - 1)
-        value = random.randint(1, 1000)
-        weight = random.randint(1, 100)
+        weight = random.randint(1, 1000)
+        random_number = random.uniform(0, 1)
+        value = weight+500*random_number
         items.append((city_index, value, weight))
     return items
 
