@@ -50,7 +50,7 @@ for cities in range(20, 120, 20):
         output_filename=f'plots/visualization_random_tour_cities_{cities}_items_{items}.png'
         results = load_results(results_filename)
         plot_histograms(results,output_filename)
-        print(f"Results saved to {results_filename}")
+        print(f"Results saved to {output_filename}")
 #results_filename = 'results_random.json'
 #results = load_results(results_filename,'visualization_random_tour_cities_20_items_20')
 

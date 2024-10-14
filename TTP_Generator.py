@@ -13,15 +13,15 @@ def generate_tsp(num_cities):
     return cities
 
 def euclidean_distance(city1, city2):
-    return round(math.sqrt((city1[0] - city2[0])**2 + (city1[1] - city2[1])**2))
+    return round(math.sqrt((city1[0] - city2[0])**2 + (city1[1] - city2[1])**2))            #should I round it up?
 
 def generate_items(num_cities, num_items):
     items = []
     for _ in range(num_items):
         city_index = random.randint(1, num_cities - 1)
-        weight = random.randint(1, 1000)
+        weight = random.randint(1, 1000)                                                    #might change again
         random_number = random.uniform(0, 1)
-        value = weight+500*random_number
+        value = weight+500*random_number                                                    #might change this again
         items.append((city_index, value, weight))
     return items
 
