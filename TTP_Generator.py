@@ -7,13 +7,15 @@ import numpy as np
 
 def generate_tsp(num_cities):
     cities = []
-    for i in range(num_cities):
+    while len(cities) < num_cities:
         x, y = random.randint(0, 100), random.randint(0, 100)
-        cities.append((x, y))
+        if (x, y) not in cities:  # Ensure no duplicate coordinates 
+            cities.append((x, y))
     return cities
 
+
 def euclidean_distance(city1, city2):
-    return round(math.sqrt((city1[0] - city2[0])**2 + (city1[1] - city2[1])**2))            #should I round it up?
+    return round(math.sqrt((city1[0] - city2[0])**2 + (city1[1] - city2[1])**2))       #should I round it up? NO
 
 def generate_items(num_cities, num_items):
     items = []
@@ -21,7 +23,7 @@ def generate_items(num_cities, num_items):
         city_index = random.randint(1, num_cities - 1)
         weight = random.randint(1, 1000)                                                    #might change again
         random_number = random.uniform(0, 1)
-        value = weight+500*random_number                                                    #might change this again
+        value = round(weight+500*random_number)                                                    #might change this again
         items.append((city_index, value, weight))
     return items
 
@@ -142,8 +144,10 @@ os.makedirs('images', exist_ok=True)
 
 # Run 1000 iterations
 def TTP_Instances(num_cities,num_items):
-    name_directory = f'json_files_TTP_instances_{num_cities}_items_{num_items}'
+    os.makedirs('problem_instances_ttp', exist_ok=True)
+    name_directory = f'problem_instances_ttp/json_files_TTP_instances_{num_cities}_items_{num_items}'
     os.makedirs(name_directory, exist_ok=True)
+    print("Starting generating TTP problems for ",num_cities," cities and ",num_items, " items")
     for iteration in range(1000):
     # Generate TTP
         ttp_data = generate_ttp(num_cities, num_items)
