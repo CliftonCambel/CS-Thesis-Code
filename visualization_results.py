@@ -39,18 +39,20 @@ def plot_histograms(results,output_filename):
     plt.savefig(output_filename, format='png')
 
     #plt.show()
-
-os.makedirs('plots', exist_ok=True)
+if __name__ == "__main__":
+    os.makedirs('plots', exist_ok=True)
 
 # Load the results from the JSON file
-for cities in range(20, 120, 20):
-    for n in range (1,5,1):     
-        items=n*cities          
-        results_filename = f'tour_results/results_random_cities_{cities}_items{items}.json'
-        output_filename=f'plots/visualization_random_tour_cities_{cities}_items_{items}.png'
-        results = load_results(results_filename)
-        plot_histograms(results,output_filename)
-        print(f"Results saved to {output_filename}")
+    iteration=1
+    for i in range(1, 3):
+        for cities in range(20, 120, 20):
+            for n in range (1,5,1):     
+                items=n*cities          
+                results_filename = f'tour_results/random_results/TTP_instances_{cities}_items_{items}/results_random_iteration_{i}_cities_{cities}_items_{items}.json'
+                output_filename=f'plots/visualization_random_tour_cities_iteration_{i}_cities_{cities}_items_{items}.png'
+                results = load_results(results_filename)
+                plot_histograms(results,output_filename)
+                print(f"Results saved to {output_filename}")
 #results_filename = 'results_random.json'
 #results = load_results(results_filename,'visualization_random_tour_cities_20_items_20')
 
