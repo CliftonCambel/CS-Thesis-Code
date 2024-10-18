@@ -115,8 +115,14 @@ def process_ttp_instances_results(input_folder, output_file,iteration):
     save_to_json(results, output_file)
 
 def parallel_process_ttp(input_folders, output_files, iterations):
-    with Pool() as pool:
-        pool.starmap(process_ttp_instances_results, zip(input_folders, output_files, iterations))
+    try:
+        with Pool() as pool:
+            pool.starmap(process_ttp_instances_results, zip(input_folders, output_files, iterations))
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        pool.close()
+        pool.join()
 
 if __name__ == "__main__":
     os.makedirs('tour_results', exist_ok=True)
