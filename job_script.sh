@@ -8,6 +8,7 @@
 #SBATCH --partition=rome
 #SBATCH --time=01:00:00
 
+module load 2022
 
 module load Python/3.10.4-GCCcore-11.3.0
 
