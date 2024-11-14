@@ -11,7 +11,7 @@
 
 # Navigate to the script directory
 #cd /path/to/your/scripts
-!pip install matplotlib
+!pip3 install matplotlib
 #module matplotlib
 python3 $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
 
