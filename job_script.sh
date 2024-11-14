@@ -1,28 +1,18 @@
-!/bin/bash
-SBATCH -J Initial_test_run_hillclimber
-SBATCH -N 1
-SBATCH --tasks-per-node 3
-SBATCH --cpus-per-task=30
-SBATCH --mem=60G
-SBATCH --partition=rome
-SBATCH -t 08:00:00
+#!/bin/bash
+#SBATCH -J Initial_test_run_hillclimber
+#SBATCH -t 1:30:00
+#SBATCH -p thin
+#SBATCH -N 1
+#SBATCH --tasks-per-node 22
+#SBATCH --mem=60G
 
 
 
-# Navigate to the script directory
-#cd /path/to/your/scripts
-#pip3 install matplotlib
-#pip3 install --upgrade numpy
-#module matplotlib
+
+
 python3 $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
 
-# Run pythonprogram2.py on another task
-#$HOME/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py 
 
-# Run pythonprogram2.py on another task
-#$HOME/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py 
-
-# Wait for both processes to finish
 
 
 echo "Finished"
