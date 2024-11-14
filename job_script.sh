@@ -11,7 +11,7 @@
 
 # Navigate to the script directory
 #cd /path/to/your/scripts
-
+module avail Python
 # Run pythonprogram1.py on one task
 python $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
 
