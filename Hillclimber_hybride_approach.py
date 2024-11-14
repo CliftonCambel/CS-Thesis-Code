@@ -5,7 +5,10 @@ import os
 import time
 import Hillclimber_TSP_swaping
 from multiprocessing import Pool, cpu_count
+import logging
+from tqdm import tqdm
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def hill_climb_hybrid(ttp, random_sample, iterations):
     cities = ttp['cities']
@@ -78,7 +81,7 @@ def process_ttp_instances_results_hill_hybride( input_folders_results_random, ou
     iterations = 1000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
     #print('okay')
-    for result in random_results:
+    for idx, result in enumerate(random_results, start=1):
         filename_problem_instance = result['problem_instance_filename']
         if not os.path.exists(filename_problem_instance):
             print(f"Error: {filename_problem_instance} does not exist.")
@@ -106,19 +109,47 @@ def process_ttp_instances_results_hill_hybride( input_folders_results_random, ou
                 'new_OB_value': best_value,
                 'computing_time': computing_time
             })
-    Hillclimber_TSP_swaping.save_to_json(results, output_file)
+   #     logging.info(f"Processed {idx}/{len(random_results)} tasks in {input_folder_results_random}")
+   # Hillclimber_TSP_swaping.save_to_json(results, output_file)
+   # logging.info(f"Finished processing for {input_folder_results_random} -> {output_file}")
+        if idx % 10 == 0 or idx == len(random_results):
+            Hillclimber_TSP_swaping.save_to_json(results, output_file)
+            logging.info(f"Saved intermediate results to {output_file} (processed {idx}/{len(random_results)} tasks)")
 
-def parallel_process_ttp(input_folders_results_random, output_files, iterations):
+
+def parallel_process_ttp(input_folders_results_random, output_files):
     try:
-        num_cores = cpu_count()
-        print("number of cores is ", num_cores)
+        num_tasks = len(list(zip(input_folders_results_random, output_files)))
+        cpu_count_sys=cpu_count()
+        num_cores = min(cpu_count_sys, num_tasks)
+        print("number of cores avaiable in the system ", cpu_count())
+        print("number of cores avaiable in the system ", num_cores)
+
+
+                # Manager for shared state (progress tracking)
+        #manager = Manager()
+        #progress = manager.Value('i', 0)  # Shared integer to track progress
+        #total_tasks = len(input_folders_results_random)
+        progress_bar = tqdm(total=num_tasks, desc="Processing TTP Instances")
+        start_time = time.time()
+
+        
+        def track_progress(input_folder, output_file):
+            #nonlocal progress
+            process_ttp_instances_results_hill_hybride(input_folder, output_file)
+            elapsed_time = time.time() - start_time
+            avg_time_per_task = elapsed_time / progress_bar.n if progress_bar.n > 0 else 0
+            remaining_time = avg_time_per_task * (num_tasks - progress_bar.n)
+            progress_bar.set_postfix({"ETA (s)": f"{remaining_time:.2f}"})
+            progress_bar.update(1)
+        
         with Pool(num_cores) as pool:
-            pool.starmap(process_ttp_instances_results_hill_hybride, zip(input_folders_results_random, output_files))
+            pool.starmap(track_progress, zip(input_folders_results_random, output_files))
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
-        pool.close()
-        pool.join()
+        progress_bar.close()
+
 
 if __name__ == "__main__":
     iterations = 1000

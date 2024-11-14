@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -J Initial_test_run_hillclimber
 #SBATCH -N 1
-#SBATCH --tasks-per-node 1
-#SBATCH --cpus-per-task=20
+#SBATCH --tasks-per-node 3
+#SBATCH --cpus-per-task=30
 #SBATCH --mem=60G
 #SBATCH --partition=rome
-#SBATCH -t 02:00:00
+#SBATCH -t 04:00:00
 
 
 
