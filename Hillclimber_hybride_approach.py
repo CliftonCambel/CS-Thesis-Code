@@ -144,8 +144,10 @@ def parallel_process_ttp(input_folders_results_random, output_files):
         track_progress_with_args = partial(track_progress, progress_bar=progress_bar, start_time=start_time, total_tasks=num_tasks)
 
         with Pool(num_cores) as pool:
-            pool.starmap(track_progress_with_args, zip(input_folders_results_random, output_files))
-        progress_bar.close()
+            pool.starmap(
+                track_progress_with_args,
+                [(input_folder, output_file) for input_folder, output_file in zip(input_folders_results_random, output_files)]
+            )
     
     except Exception as e:
         print(f"An error occurred: {e}")
