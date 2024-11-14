@@ -11,8 +11,8 @@
 
 # Navigate to the script directory
 #cd /path/to/your/scripts
-module avail Python
-# Run pythonprogram1.py on one task
+module load 2022
+module load Python/3.10.4-GCCcore-11.3.0
 python $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
 
 # Run pythonprogram2.py on another task
