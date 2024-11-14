@@ -78,7 +78,7 @@ def hill_climb_hybrid(ttp, random_sample, iterations):
 
 def process_ttp_instances_results_hill_hybride( input_folders_results_random, output_file):
     results = []
-    iterations = 1000
+    iterations = 10000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
     #print('okay')
     for idx, result in enumerate(random_results, start=1):
@@ -152,7 +152,6 @@ def parallel_process_ttp(input_folders_results_random, output_files):
 
 
 if __name__ == "__main__":
-    iterations = 10000
     os.makedirs('tour_results/hillclimber_hybride_results', exist_ok=True)
     input_folders_problem_instances = []
     input_folders_results_random = []
@@ -174,6 +173,6 @@ if __name__ == "__main__":
     # Process the TTP instances and save results
     #output_file = 'results.json'
     #print("okay")
-    parallel_process_ttp(input_folders_results_random, output_files, iterations)
+    parallel_process_ttp(input_folders_results_random, output_files)
 
     #print(f"Results saved to {output_file}")
