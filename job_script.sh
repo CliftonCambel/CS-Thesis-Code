@@ -13,8 +13,13 @@
 
 module load python                    
 
+#Copy input file to scratch
+cp $HOME/big_input_file "$TMPDIR"
+ 
+#Create output directory on scratch
+mkdir "$TMPDIR"/output_d
 
-srun python $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
+srun python $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py "$TMPDIR"/big_input_file "$TMPDIR"/output_dir
 
 
 
