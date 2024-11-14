@@ -152,7 +152,7 @@ def parallel_process_ttp(input_folders_results_random, output_files):
 
 
 if __name__ == "__main__":
-    iterations = 1000
+    iterations = 10000
     os.makedirs('tour_results/hillclimber_hybride_results', exist_ok=True)
     input_folders_problem_instances = []
     input_folders_results_random = []
