@@ -4,6 +4,7 @@
 #SBATCH --error=error_%j.log
 #SBATCH --nodes=1
 #SBATCH --ntasks=3                # Request 3 tasks
+#SBATCH --partition=rome
 #SBATCH --cpus-per-task=20         # 20 CPUs per task for multithreading
 #SBATCH --time=08:00:00           # Time limit
 #SBATCH --mem=16GB                # Memory limit
