@@ -14,7 +14,7 @@
 module list
 module load 2023
 module load Python/3.11.3-GCCcore-12.3.0
-python $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
+python3 $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
 
 # Run pythonprogram2.py on another task
 #$HOME/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py 
