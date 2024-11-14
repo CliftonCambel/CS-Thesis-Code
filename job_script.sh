@@ -13,7 +13,7 @@
 #cd /path/to/your/scripts
 
 # Run pythonprogram1.py on one task
-$HOME/clif/CS-Thesis-Code/python Hillclimber_hybride_approach.py 
+python $HOME/clif/CS-Thesis-Code/python Hillclimber_hybride_approach.py 
 
 # Run pythonprogram2.py on another task
 #$HOME/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py 
