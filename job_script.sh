@@ -11,8 +11,8 @@
 
 # Navigate to the script directory
 #cd /path/to/your/scripts
-module load 2022
-module load Python/3.10.4-GCCcore-11.3.0
+module load 2023
+module load Python/3.11.3-GCCcore-12.3.0
 python $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
 
 # Run pythonprogram2.py on another task
