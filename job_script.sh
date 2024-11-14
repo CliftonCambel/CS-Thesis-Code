@@ -3,6 +3,7 @@
 #SBATCH -N 1
 #SBATCH --tasks-per-node 3
 #SBATCH --cpus-per-task=20
+#SBATCH --mem=60G
 #SBATCH --partition=rome
 #SBATCH -t 01:00:00
 
