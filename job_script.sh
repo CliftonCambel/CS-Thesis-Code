@@ -18,13 +18,13 @@
 #cd /path/to/your/scripts
 
 # Run pythonprogram1.py on one task
-srun --ntasks=1 --cpus-per-task=20 $HOME/CS-Thesis_Code/python Hillclimber_hybride_approach.py > output1.log &
+srun --ntasks=1 --cpus-per-task=20 /home/clif/CS-Thesis-Code/python Hillclimber_hybride_approach.py > output1.log &
 
 # Run pythonprogram2.py on another task
-srun --ntasks=1 --cpus-per-task=20 $HOME/CS-Thesis_Code/python Hillclimber_TSP_swaping.py > output2.log &
+srun --ntasks=1 --cpus-per-task=20 /home/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py > output2.log &
 
 # Run pythonprogram2.py on another task
-srun --ntasks=1 --cpus-per-task=20 $HOME/CS-Thesis_Code/python Hillclimber_TSP_swaping.py > output2.log &
+srun --ntasks=1 --cpus-per-task=20 /home/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py > output2.log &
 
 # Wait for both processes to finish
 wait
