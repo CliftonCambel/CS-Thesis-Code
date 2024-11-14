@@ -1,12 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=Initial_test_run_hillclimber
-#SBATCH --output=output_%j.log
-#SBATCH --error=error_%j.log
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=64
+#SBATCH -J Initial_test_run_hillclimber
+#SBATCH -N 1
+#SBATCH --tasks-per-node 3
+#SBATCH --cpus-per-task=20
 #SBATCH --partition=rome
-#SBATCH --time=01:00:00
+#SBATCH -t 01:00:00
 
 module load 2022
 
