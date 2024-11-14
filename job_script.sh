@@ -14,7 +14,7 @@
 
 
 
-srun $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
+srun python3 $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
 
 
 
