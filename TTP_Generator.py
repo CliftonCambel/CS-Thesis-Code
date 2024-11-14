@@ -167,10 +167,11 @@ def TTP_Instances(num_cities,num_items):
 
 #the number of cities is can be changed by changing the start, end and step values of the first range function ,
 # and the second the n multiplier of amount of items. 
-for cities in range(20, 120, 20):
-    for n in range (1,5,1):     
-        items=n*cities          
-        TTP_Instances(cities,items)
+if __name__ == "__main__":
+    for cities in range(20, 120, 20):
+        for n in range (1,5,1):     
+            items=n*cities          
+            TTP_Instances(cities,items)
 
 
 

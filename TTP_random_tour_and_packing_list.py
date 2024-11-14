@@ -5,7 +5,9 @@ import os
 import matplotlib.pyplot as plt
 import time
 import numpy as np
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
+import TTP_Generator
+
 
 
 def save_to_json(data, filename):
@@ -43,7 +45,7 @@ def objective_function(tour,packinglist, items, distances, vmax, vmin, W, R): #c
     #print(cost,total_distance)
     OB = total_value - cost
     random_actual_packing_list.sort()
-    return OB, random_actual_packing_list
+    return OB, random_actual_packing_list, cost
 
 def random_tour_and_packing(ttp):
     cities = ttp['cities']
@@ -52,17 +54,17 @@ def random_tour_and_packing(ttp):
     total_weight_ttp_instance = 0
     num_cities = len(cities)
     num_items = len(items)
-    max_value_item=0
+   # max_value_item=0
     for item in items:
         total_weight_ttp_instance += item['weight']
-        if item['value']>max_value_item:
-            max_value_item = item['value']
+    #    if item['value']>max_value_item:
+    #        max_value_item = item['value']
    # distance_matrix = np.array(distances)
    # min_distance = np.min(distance_matrix[distance_matrix > 0])
     vmax = 1.0
     vmin = 0.1
     Tr=0.25 #Tightness ratio interval [0,1], suggested 0.25,0.5,0.75
-    W = Tr*total_weight_ttp_instance                #num_items*50/2 #might change.
+    W = round(Tr*total_weight_ttp_instance)                #num_items*50/2 #might change.
    # r=0.05 # r is a random number in the interval [0.05,0.25], this will be fixed in this experiment to 0.15, to keep it more consistent and keeping it in the middle, for abitritary reasons
    # E_p=Tr*num_items*max_value_item
    # E_t = min_distance*num_cities/vmax #vague formula, don't understand why divided by vmax considering it is 1
@@ -73,7 +75,7 @@ def random_tour_and_packing(ttp):
     random_tour = [0] + random_tour + [0]  # Ensure tour starts and ends at city 0
     random_packing_binary_list= generate_binary_list_with_probability(num_items,Tr)
     random_packing_integer_list = read_binary_list_as_integers(random_packing_binary_list)
-    OB_value, random_actual_packing_list = objective_function(random_tour, random_packing_integer_list, items, distances, vmax, vmin, W, R)
+    OB_value, random_actual_packing_list, cost = objective_function(random_tour, random_packing_integer_list, items, distances, vmax, vmin, W, R)
     return random_tour, random_packing_integer_list, random_actual_packing_list, OB_value, W, R
 
 def generate_binary_list_with_probability(num_items, probability):
@@ -102,7 +104,7 @@ def process_ttp_instances_results(input_folder, output_file,iteration):
             end_time = time.time()
             computing_time = end_time - start_time
             results.append({
-                'problem_instance_filename': filename,
+                'problem_instance_filename': f'{input_folder}/{filename}',
                 'Iteration': iteration,
                 'random_tour': random_tour,
                 'random_packing_list':random_packing_list,
@@ -116,7 +118,8 @@ def process_ttp_instances_results(input_folder, output_file,iteration):
 
 def parallel_process_ttp(input_folders, output_files, iterations):
     try:
-        with Pool() as pool:
+        num_cores = cpu_count()
+        with Pool(num_cores) as pool:
             pool.starmap(process_ttp_instances_results, zip(input_folders, output_files, iterations))
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -127,7 +130,7 @@ def parallel_process_ttp(input_folders, output_files, iterations):
 if __name__ == "__main__":
     os.makedirs('tour_results', exist_ok=True)
     os.makedirs('tour_results/random_results', exist_ok=True)
-    iteration = 1
+    #iteration = 1
 
     input_folders = []
     output_files = []
