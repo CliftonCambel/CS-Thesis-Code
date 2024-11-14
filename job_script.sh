@@ -11,9 +11,10 @@
 #SBATCH --mail-user=c.c.roozendal@student.vu.nl  
 
 
+module load python                    
 
 
-srun python3 $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
+srun python $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
 
 
 
