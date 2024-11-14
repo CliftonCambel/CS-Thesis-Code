@@ -15,13 +15,13 @@ module load Python/3.10.4-GCCcore-11.3.0
 #cd /path/to/your/scripts
 
 # Run pythonprogram1.py on one task
-srun $HOME/clif/CS-Thesis-Code/python Hillclimber_hybride_approach.py 
+$HOME/clif/CS-Thesis-Code/python Hillclimber_hybride_approach.py 
 
 # Run pythonprogram2.py on another task
-srun  $HOME/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py 
+$HOME/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py 
 
 # Run pythonprogram2.py on another task
-srun $HOME/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py 
+$HOME/clif/CS-Thesis-Code/python Hillclimber_TSP_swaping.py 
 
 # Wait for both processes to finish
 wait
