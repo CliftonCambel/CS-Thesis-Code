@@ -113,7 +113,7 @@ def process_ttp_instances_results_hill_hybride( input_folders_results_random, ou
    #     logging.info(f"Processed {idx}/{len(random_results)} tasks in {input_folder_results_random}")
    # Hillclimber_TSP_swaping.save_to_json(results, output_file)
    # logging.info(f"Finished processing for {input_folder_results_random} -> {output_file}")
-        if idx % 10 == 0 or idx == len(random_results):
+        if idx % 1000 == 0 or idx == len(random_results):
             Hillclimber_TSP_swaping.save_to_json(results, output_file)
             logging.info(f"Saved intermediate results to {output_file} (processed {idx}/{len(random_results)} tasks)")
 
