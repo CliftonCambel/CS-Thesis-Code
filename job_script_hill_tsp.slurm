@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J run_hillclimber_hybride
+#SBATCH -J run_hillclimber_tsp
 #SBATCH -N 1                        
 #SBATCH --ntasks=1                       
 #SBATCH --cpus-per-task=20               
@@ -10,8 +10,7 @@
 
 
 
-python3 $HOME/CS-Thesis-Code/Hillclimber_hybride_approach.py 
-
+python3 $HOME/CS-Thesis-Code/Hillclimber_TSP_swaping.py
 
 
 

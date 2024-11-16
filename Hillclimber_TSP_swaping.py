@@ -43,7 +43,7 @@ def hillclimber_tsp_swap(ttp, random_sample, iterations):
     distances = ttp['distances']
     num_cities = len(cities)
     #print(num_cities)
-    packinglist = random_sample['random_packing_list']
+    packinglist = random_sample['random_actual_packing_list']
     total_weight_ttp_instance = 0
     
     # Calculate the total weight of all items in the TTP instance
@@ -95,7 +95,7 @@ def hillclimber_tsp_swap(ttp, random_sample, iterations):
 # Read TTP instances from JSON files and save results
 def process_ttp_instances_results_hill_swap( input_folders_results_random, output_file):
     results = []
-    iterations = 1000
+    iterations = 10000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
     #print('okay')
     for result in random_results:
@@ -128,20 +128,20 @@ def process_ttp_instances_results_hill_swap( input_folders_results_random, outpu
             })
     save_to_json(results, output_file)
 
-def parallel_process_ttp(input_folders_results_random, output_files, iterations):
+def parallel_process_ttp(input_folders_results_random, output_files):
     try:
-        num_cores = cpu_count()
-        print("number of cores is ", num_cores)
+        num_tasks = len(list(zip(input_folders_results_random, output_files)))
+        cpu_count_sys = cpu_count()
+        num_cores = min(cpu_count_sys, num_tasks)
+        #print("number of cores is ", num_cores)
         with Pool(num_cores) as pool:
             pool.starmap(process_ttp_instances_results_hill_swap, zip(input_folders_results_random, output_files))
     except Exception as e:
         print(f"An error occurred: {e}")
-    finally:
-        pool.close()
-        pool.join()
+
 
 if __name__ == "__main__":
-    iterations = 1000
+    #iterations = 1000
     os.makedirs('tour_results/hillclimber_tsp_swapping_results', exist_ok=True)
     input_folders_problem_instances = []
     input_folders_results_random = []
@@ -163,6 +163,6 @@ if __name__ == "__main__":
     # Process the TTP instances and save results
     #output_file = 'results.json'
     #print("okay")
-    parallel_process_ttp(input_folders_results_random, output_files, iterations)
+    parallel_process_ttp(input_folders_results_random, output_files)
 
     print(f"Results saved to {output_file}")

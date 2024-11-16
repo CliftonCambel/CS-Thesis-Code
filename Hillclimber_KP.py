@@ -51,15 +51,15 @@ def hill_climb_KP(ttp, random_sample, iterations):
 
         # Generate a neighboring solution by changing the knapsack content
         new_packinglist = packinglist[:]
-        if random.random() < 0.5:  # 50% chance to add or remove an item
+        #if random.random() < 0.5:  # 50% chance to add or remove an item
             # Try adding a random item
-            random_item_id = random.randint(0, num_items - 1)
-            random_item = [item for item in items if item['id'] == random_item_id]
-            if random_item_id not in new_packinglist and random_item and sum(item['weight'] for item in items) + random_item[0]['weight'] <= W:
-                new_packinglist.append(random_item_id)
+        random_item_id = random.randint(0, num_items - 1)
+        random_item = [item for item in items if item['id'] == random_item_id]
+        if random_item_id not in new_packinglist and random_item and sum(item['weight'] for item in items) + random_item[0]['weight'] <= W:
+            new_packinglist.append(random_item_id)
             # Or try removing a random item
-            elif new_packinglist:
-                new_packinglist.remove(random.choice(new_packinglist))
+        elif new_packinglist:
+            new_packinglist.remove(random.choice(new_packinglist))
 
         # Evaluate the new solution
         new_fitness, _, _ = TTP_random_tour_and_packing_list.objective_function(best_tour, new_packinglist, items, distances, vmax, vmin, W, R)
@@ -75,7 +75,7 @@ def hill_climb_KP(ttp, random_sample, iterations):
 
 def process_ttp_instances_results_hill_KP( input_folders_results_random, output_file):
     results = []
-    iterations = 1000
+    iterations = 10000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
     #print('okay')
     for result in random_results:
@@ -108,20 +108,20 @@ def process_ttp_instances_results_hill_KP( input_folders_results_random, output_
             })
     Hillclimber_TSP_swaping.save_to_json(results, output_file)
 
-def parallel_process_ttp(input_folders_results_random, output_files, iterations):
+def parallel_process_ttp(input_folders_results_random, output_files):
     try:
-        num_cores = cpu_count()
-        print("number of cores is ", num_cores)
+        num_tasks = len(list(zip(input_folders_results_random, output_files)))
+        cpu_count_sys = cpu_count()
+        num_cores = min(cpu_count_sys, num_tasks)
+        #print("number of cores is ", num_cores)
         with Pool(num_cores) as pool:
             pool.starmap(process_ttp_instances_results_hill_KP, zip(input_folders_results_random, output_files))
     except Exception as e:
         print(f"An error occurred: {e}")
-    finally:
-        pool.close()
-        pool.join()
+
 
 if __name__ == "__main__":
-    iterations = 1000
+    #iterations = 1000
     os.makedirs('tour_results/hillclimber_KP_results', exist_ok=True)
     input_folders_problem_instances = []
     input_folders_results_random = []
@@ -143,4 +143,4 @@ if __name__ == "__main__":
     # Process the TTP instances and save results
     #output_file = 'results.json'
     #print("okay")
-    parallel_process_ttp(input_folders_results_random, output_files, iterations)
+    parallel_process_ttp(input_folders_results_random, output_files)

@@ -113,38 +113,38 @@ def process_ttp_instances_results_hill_hybride( input_folders_results_random, ou
    #     logging.info(f"Processed {idx}/{len(random_results)} tasks in {input_folder_results_random}")
    # Hillclimber_TSP_swaping.save_to_json(results, output_file)
    # logging.info(f"Finished processing for {input_folder_results_random} -> {output_file}")
-        if idx % 1000 == 0 or idx == len(random_results):
-            Hillclimber_TSP_swaping.save_to_json(results, output_file)
-            logging.info(f"Saved intermediate results to {output_file} (processed {idx}/{len(random_results)} tasks)")
+        #if idx % 1000 == 0 or idx == len(random_results):
+        Hillclimber_TSP_swaping.save_to_json(results, output_file)
+            #logging.info(f"Saved intermediate results to {output_file} (processed {idx}/{len(random_results)} tasks)")
 
-def track_progress(input_folder, output_file):
+#def track_progress(input_folder, output_file):
     # Perform the task
-    process_ttp_instances_results_hill_hybride(input_folder, output_file)
+    #process_ttp_instances_results_hill_hybride(input_folder, output_file)
 
 def parallel_process_ttp(input_folders_results_random, output_files):
     try:
         num_tasks = len(list(zip(input_folders_results_random, output_files)))
         cpu_count_sys = cpu_count()
         num_cores = min(cpu_count_sys, num_tasks)
-        print("number of cores available in the system:", cpu_count_sys)
-        print("number of cores used in the system:", num_cores)
+        #print("number of cores available in the system:", cpu_count_sys)
+        #print("number of cores used in the system:", num_cores)
 
         # Initialize the progress bar
-        progress_bar = tqdm(total=num_tasks, desc="Processing TTP Instances")
-        start_time = time.time()
+        #progress_bar = tqdm(total=num_tasks, desc="Processing TTP Instances")
+        #start_time = time.time()
 
         # Function to update the progress bar after each task
-        def update_progress(*args):
-            progress_bar.update(1)
+        #def update_progress(*args):
+        #    progress_bar.update(1)
 
         with Pool(num_cores) as pool:
             # Use the pool to execute tasks and track progress
-            for _ in pool.starmap(track_progress, zip(input_folders_results_random, output_files)):
-                update_progress()  # Update progress bar in the parent process
+            pool.starmap(process_ttp_instances_results_hill_hybride, zip(input_folders_results_random, output_files))
+            #    update_progress()  # Update progress bar in the parent process
 
-        progress_bar.close()
-        elapsed_time = time.time() - start_time
-        print(f"All tasks completed in {elapsed_time:.2f} seconds.")
+        #progress_bar.close()
+        #elapsed_time = time.time() - start_time
+        #print(f"All tasks completed in {elapsed_time:.2f} seconds.")
 
     except Exception as e:
         print(f"An error occurred: {e}")
