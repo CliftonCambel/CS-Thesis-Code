@@ -83,7 +83,7 @@ def hillclimber_tsp_swap(ttp, random_sample, iterations):
             new_tour[i], new_tour[j] = new_tour[j], new_tour[i]
 
             # Evaluate the new tour
-            new_value, random_actual_packing_list = TTP_random_tour_and_packing_list.objective_function(
+            new_value, random_actual_packing_list,_ = TTP_random_tour_and_packing_list.objective_function(
                 new_tour, packinglist, items, distances, vmax, vmin, W, R)
             
             # If the new tour is better, update the best tour and value
