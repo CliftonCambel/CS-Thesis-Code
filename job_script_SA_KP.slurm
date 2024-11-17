@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1                       
 #SBATCH --cpus-per-task=20               
 #SBATCH -p rome                 
-#SBATCH -t 09:00:00                  
+#SBATCH -t 15:00:00                  
 #SBATCH --mail-type=BEGIN,END            
 #SBATCH --mail-user=c.c.roozendal@student.vu.nl  
 
