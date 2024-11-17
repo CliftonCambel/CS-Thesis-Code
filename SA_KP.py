@@ -8,8 +8,6 @@ from multiprocessing import Pool, cpu_count
 import logging
 from tqdm import tqdm
 from functools import partial
-
-
 import math
 
 def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=1000, cooling_rate=0.99):
@@ -67,8 +65,8 @@ def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=1
         temperature *= cooling_rate
 
         # Optional: Stop if the temperature is too low
-        if temperature < 1e-3:
-            break
+        #if temperature < 1e-3:
+        #    break
 
     return best_tour, best_knapsack, best_fitness
 
@@ -76,7 +74,6 @@ def process_ttp_instances_results_hill_KP( input_folders_results_random, output_
     results = []
     iterations = 10000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
-    #print('okay')
     for idx, result in enumerate(random_results, start=1):
         filename_problem_instance = result['problem_instance_filename']
         if not os.path.exists(filename_problem_instance):
@@ -84,7 +81,7 @@ def process_ttp_instances_results_hill_KP( input_folders_results_random, output_
             return
         ttp_problem_instance = Hillclimber_TSP_swaping.load_json(filename_problem_instance)
         start_time = time.time()  
-        best_tour, best_knapsack, best_value = hill_climb_KP(ttp_problem_instance, result,iterations)
+        best_tour, best_knapsack, best_value = simulated_annealing_KP(ttp_problem_instance, result,iterations)
         end_time = time.time()
         computing_time = end_time - start_time
         results.append({
@@ -113,7 +110,7 @@ def parallel_process_ttp(input_folders_results_random, output_files):
 
 
 if __name__ == "__main__":
-    os.makedirs('tour_results/hillclimber_KP_results', exist_ok=True)
+    os.makedirs('tour_results/SA_KP_results', exist_ok=True)
     input_folders_problem_instances = []
     input_folders_results_random = []
     output_files = []
@@ -121,11 +118,11 @@ if __name__ == "__main__":
     for cities in range(20, 120, 20):
         for n in range(1, 5): 
             items = n * cities
-            name_directory = f'tour_results/hillclimber_KP_results/TTP_instances_{cities}_items_{items}'
+            name_directory = f'tour_results/SA_KP_results/TTP_instances_{cities}_items_{items}'
             os.makedirs(name_directory, exist_ok=True)
             input_folder_results_random = f'tour_results/random_results/TTP_instances_{cities}_items_{items}'
             input_folders_results_random.append(input_folder_results_random)
-            output_file=f'{name_directory}/results_hillclimber_tsp_cities_{cities}_items_{items}.json'
+            output_file=f'{name_directory}/results_SA_tsp_cities_{cities}_items_{items}.json'
             output_files.append(output_file)
     parallel_process_ttp(input_folders_results_random, output_files)
 
