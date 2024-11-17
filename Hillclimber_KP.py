@@ -8,70 +8,41 @@ from multiprocessing import Pool, cpu_count
 
 
 def hill_climb_KP(ttp, random_sample, iterations):
-    cities = ttp['cities']
-    #print(cities)
+    #cities = ttp['cities']
     items = ttp['items']
+    item_dict = {item['id']: item for item in items}  # Precompute item lookup
     distances = ttp['distances']
-    num_cities = len(cities)
-    #print(num_cities)
     num_items = len(items)
     packinglist = random_sample['random_actual_packing_list']
-    total_weight_ttp_instance = 0
-    
-    # Calculate the total weight of all items in the TTP instance
-    for item in items:
-        total_weight_ttp_instance += item['weight']
+    total_weight_ttp_instance = sum(item['weight'] for item in items)
 
-    Tr = 0.25  # Tightness ratio interval [0,1], suggested 0.25,0.5,0.75
-    W = round(Tr * total_weight_ttp_instance)  # Example formula, may be adjusted
-    vmax = 1.0
-    vmin = 0.1
-    R = 1.0
-    # Initial random tour
+    Tr = 0.25
+    W = round(Tr * total_weight_ttp_instance)
+    vmax, vmin, R = 1.0, 0.1, 1.0
+
     best_tour = random_sample['random_tour']
     best_fitness = random_sample['OB_value']
-    #print(best_tour)
-    # Ensure that `best_tour` is a list and correctly formatted
-    if not isinstance(best_tour, list):
-        raise ValueError("Expected `random_tour` to be a list, but got an integer or other non-iterable object.")
+    best_knapsack = packinglist[:]  # Initialize
 
-    # Ensure the initial tour starts and ends at node 0
-    if best_tour[0] != 0 or best_tour[-1] != 0:
-        best_tour = [0] + [city for city in best_tour if city != 0] + [0]
     for _ in range(iterations):
-        # Generate a neighboring solution by swapping two cities
-    #    new_tour = best_tour[:]
-    #    if num_cities > 2:  # Ensure there's enough to swap
-    #        i, j = random.sample(range(1, num_cities - 1), 2)
-            
-            # Swap the two cities
-    #        new_tour[i], new_tour[j] = new_tour[j], new_tour[i]
-
-            # Evaluate the new tour
-
-        # Generate a neighboring solution by changing the knapsack content
         new_packinglist = packinglist[:]
-        #if random.random() < 0.5:  # 50% chance to add or remove an item
-            # Try adding a random item
         random_item_id = random.randint(0, num_items - 1)
-        random_item = [item for item in items if item['id'] == random_item_id]
-        if random_item_id not in new_packinglist and random_item and sum(item['weight'] for item in items) + random_item[0]['weight'] <= W:
+        random_item = item_dict.get(random_item_id)
+
+        if random_item and random_item_id not in new_packinglist and sum(item['weight'] for item in items) + random_item['weight'] <= W:
             new_packinglist.append(random_item_id)
-            # Or try removing a random item
         elif new_packinglist:
             new_packinglist.remove(random.choice(new_packinglist))
 
-        # Evaluate the new solution
-        new_fitness, _, _ = TTP_random_tour_and_packing_list.objective_function(best_tour, new_packinglist, items, distances, vmax, vmin, W, R)
+        new_fitness, _, _ = TTP_random_tour_and_packing_list.objective_function(
+            best_tour, new_packinglist, items, distances, vmax, vmin, W, R
+        )
 
-        # Accept the new solution if it's better
         if new_fitness > best_fitness:
             best_fitness = new_fitness
-            best_route = best_tour
-            best_knapsack = new_packinglist
+            best_knapsack = new_packinglist[:]
 
-    return best_route, best_knapsack, best_fitness
-
+    return best_tour, best_knapsack, best_fitness
 
 def process_ttp_instances_results_hill_KP( input_folders_results_random, output_file):
     results = []
