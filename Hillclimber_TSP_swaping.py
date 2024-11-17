@@ -19,30 +19,12 @@ def load_json(filename):
     with open(filename, 'r') as file:
         return json.load(file)
 
-#def objective_function(tour, items, distances, vmax, vmin, W, R):
-#    total_value = 0
-#    total_weight = 0
-#    total_distance = 0
-#    for i in range(len(tour)):
-#        current_city = tour[i]
-#        next_city = tour[(i + 1) % len(tour)]
-#        total_distance += distances[current_city][next_city]
-#        for item in items:
-#            if item['city'] == current_city:
-#                total_value += item['value']
-#                total_weight += item['weight']
-#    speed = vmax - (vmax - vmin) * (total_weight / W)
-#    travel_time = total_distance / speed
-#    cost = travel_time * R
-#    return total_value - cost
 
 def hillclimber_tsp_swap(ttp, random_sample, iterations):
     cities = ttp['cities']
-    #print(cities)
     items = ttp['items']
     distances = ttp['distances']
     num_cities = len(cities)
-    #print(num_cities)
     packinglist = random_sample['random_actual_packing_list']
     total_weight_ttp_instance = 0
     
@@ -58,8 +40,6 @@ def hillclimber_tsp_swap(ttp, random_sample, iterations):
 
     # Initial random tour
     best_tour = random_sample['random_tour']
-    #print(best_tour)
-    # Ensure that `best_tour` is a list and correctly formatted
     if not isinstance(best_tour, list):
         raise ValueError("Expected `random_tour` to be a list, but got an integer or other non-iterable object.")
 
@@ -69,8 +49,6 @@ def hillclimber_tsp_swap(ttp, random_sample, iterations):
 
     best_value = random_sample['OB_value']
     random_actual_packing_list = ""
-    #print(f"Type of best_tour: {type(best_tour)}, Value: {best_tour}")
-    #print(f"Type of random_sample['random_tour']: {type(random_sample['random_tour'])}, Value: {random_sample['random_tour']}")
     for _ in range(iterations):
         # Generate a new tour by swapping two cities, ensuring start and end at 0
         new_tour = best_tour[:]
@@ -97,20 +75,12 @@ def process_ttp_instances_results_hill_swap( input_folders_results_random, outpu
     results = []
     iterations = 10000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
-    #print('okay')
-    for result in random_results:
+    for idx, result in enumerate(random_results, start=1):
         filename_problem_instance = result['problem_instance_filename']
         if not os.path.exists(filename_problem_instance):
             print(f"Error: {filename_problem_instance} does not exist.")
             return
-        #print(result)
         ttp_problem_instance = load_json(filename_problem_instance)
-        #cities = ttp_problem_instance.get("cities", [])
-        #items = ttp_problem_instance.get("items", [])
-    #for filename in os.listdir(input_folder):
-    #    if filename.endswith('.json'):
-    #        with open(os.path.join(input_folder, filename), 'r') as f:
-    #            ttp = json.load(f)
         start_time = time.time()  
         best_tour, best_value = hillclimber_tsp_swap(ttp_problem_instance, result,iterations)
         end_time = time.time()
@@ -126,14 +96,14 @@ def process_ttp_instances_results_hill_swap( input_folders_results_random, outpu
                 'new_OB_value': best_value,
                 'computing_time': computing_time
             })
-    save_to_json(results, output_file)
+        if idx % 100 == 0 or idx == len(random_results):
+            save_to_json(results, output_file)
 
 def parallel_process_ttp(input_folders_results_random, output_files):
     try:
         num_tasks = len(list(zip(input_folders_results_random, output_files)))
         cpu_count_sys = cpu_count()
         num_cores = min(cpu_count_sys, num_tasks)
-        #print("number of cores is ", num_cores)
         with Pool(num_cores) as pool:
             pool.starmap(process_ttp_instances_results_hill_swap, zip(input_folders_results_random, output_files))
     except Exception as e:
@@ -141,28 +111,19 @@ def parallel_process_ttp(input_folders_results_random, output_files):
 
 
 if __name__ == "__main__":
-    #iterations = 1000
     os.makedirs('tour_results/hillclimber_tsp_swapping_results', exist_ok=True)
     input_folders_problem_instances = []
     input_folders_results_random = []
     output_files = []
 
     for cities in range(20, 120, 20):
-        #print(cities)
         for n in range(1, 5): 
-            #print(n)    
             items = n * cities
             name_directory = f'tour_results/hillclimber_tsp_swapping_results/TTP_instances_{cities}_items_{items}'
             os.makedirs(name_directory, exist_ok=True)
-            #input_folder_problem_instances = f'problem_instances_ttp/json_files_TTP_instances_{cities}_items_{items}'
             input_folder_results_random = f'tour_results/random_results/TTP_instances_{cities}_items_{items}'
-           # input_folders_problem_instances.append(input_folder_problem_instances)
             input_folders_results_random.append(input_folder_results_random)
             output_file=f'{name_directory}/results_hillclimber_tsp_cities_{cities}_items_{items}.json'
             output_files.append(output_file)
-    # Process the TTP instances and save results
-    #output_file = 'results.json'
-    #print("okay")
     parallel_process_ttp(input_folders_results_random, output_files)
 
-    print(f"Results saved to {output_file}")

@@ -9,15 +9,12 @@ import logging
 from tqdm import tqdm
 from functools import partial
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def hill_climb_hybrid(ttp, random_sample, iterations):
     cities = ttp['cities']
-    #print(cities)
     items = ttp['items']
     distances = ttp['distances']
     num_cities = len(cities)
-    #print(num_cities)
     num_items = len(items)
     packinglist = random_sample['random_actual_packing_list']
     total_weight_ttp_instance = 0
@@ -31,11 +28,8 @@ def hill_climb_hybrid(ttp, random_sample, iterations):
     vmax = 1.0
     vmin = 0.1
     R = 1.0
-    # Initial random tour
     best_tour = random_sample['random_tour']
     best_fitness = random_sample['OB_value']
-    #print(best_tour)
-    # Ensure that `best_tour` is a list and correctly formatted
     if not isinstance(best_tour, list):
         raise ValueError("Expected `random_tour` to be a list, but got an integer or other non-iterable object.")
 
@@ -81,20 +75,12 @@ def process_ttp_instances_results_hill_hybride( input_folders_results_random, ou
     results = []
     iterations = 10000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
-    #print('okay')
     for idx, result in enumerate(random_results, start=1):
         filename_problem_instance = result['problem_instance_filename']
         if not os.path.exists(filename_problem_instance):
             print(f"Error: {filename_problem_instance} does not exist.")
             return
-        #print(result)
         ttp_problem_instance = Hillclimber_TSP_swaping.load_json(filename_problem_instance)
-        #cities = ttp_problem_instance.get("cities", [])
-        #items = ttp_problem_instance.get("items", [])
-    #for filename in os.listdir(input_folder):
-    #    if filename.endswith('.json'):
-    #        with open(os.path.join(input_folder, filename), 'r') as f:
-    #            ttp = json.load(f)
         start_time = time.time()  
         best_tour, best_knapsack, best_value = hill_climb_hybrid(ttp_problem_instance, result,iterations)
         end_time = time.time()
@@ -105,46 +91,23 @@ def process_ttp_instances_results_hill_hybride( input_folders_results_random, ou
                 'old_random_tour':result['random_tour'],
                 'best_new_tour': best_tour,
                 'old_actual_fixed_packinglist':result['random_actual_packing_list'],
-                'old_actual_fixed_packinglist':best_knapsack,
+                'optimized_packinglist':best_knapsack,
                 'initial_OB_value':result['OB_value'],
                 'new_OB_value': best_value,
                 'computing_time': computing_time
             })
-   #     logging.info(f"Processed {idx}/{len(random_results)} tasks in {input_folder_results_random}")
-   # Hillclimber_TSP_swaping.save_to_json(results, output_file)
-   # logging.info(f"Finished processing for {input_folder_results_random} -> {output_file}")
-        #if idx % 1000 == 0 or idx == len(random_results):
-        Hillclimber_TSP_swaping.save_to_json(results, output_file)
-            #logging.info(f"Saved intermediate results to {output_file} (processed {idx}/{len(random_results)} tasks)")
+        if idx % 100 == 0 or idx == len(random_results):
+            Hillclimber_TSP_swaping.save_to_json(results, output_file)
 
-#def track_progress(input_folder, output_file):
-    # Perform the task
-    #process_ttp_instances_results_hill_hybride(input_folder, output_file)
 
 def parallel_process_ttp(input_folders_results_random, output_files):
     try:
         num_tasks = len(list(zip(input_folders_results_random, output_files)))
         cpu_count_sys = cpu_count()
         num_cores = min(cpu_count_sys, num_tasks)
-        #print("number of cores available in the system:", cpu_count_sys)
-        #print("number of cores used in the system:", num_cores)
-
-        # Initialize the progress bar
-        #progress_bar = tqdm(total=num_tasks, desc="Processing TTP Instances")
-        #start_time = time.time()
-
-        # Function to update the progress bar after each task
-        #def update_progress(*args):
-        #    progress_bar.update(1)
 
         with Pool(num_cores) as pool:
-            # Use the pool to execute tasks and track progress
             pool.starmap(process_ttp_instances_results_hill_hybride, zip(input_folders_results_random, output_files))
-            #    update_progress()  # Update progress bar in the parent process
-
-        #progress_bar.close()
-        #elapsed_time = time.time() - start_time
-        #print(f"All tasks completed in {elapsed_time:.2f} seconds.")
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -157,21 +120,13 @@ if __name__ == "__main__":
     output_files = []
 
     for cities in range(20, 120, 20):
-        #print(cities)
         for n in range(1, 5): 
-            #print(n)    
             items = n * cities
             name_directory = f'tour_results/hillclimber_hybride_results/TTP_instances_{cities}_items_{items}'
             os.makedirs(name_directory, exist_ok=True)
-            #input_folder_problem_instances = f'problem_instances_ttp/json_files_TTP_instances_{cities}_items_{items}'
             input_folder_results_random = f'tour_results/random_results/TTP_instances_{cities}_items_{items}'
-           # input_folders_problem_instances.append(input_folder_problem_instances)
             input_folders_results_random.append(input_folder_results_random)
             output_file=f'{name_directory}/results_hillclimber_tsp_cities_{cities}_items_{items}.json'
             output_files.append(output_file)
-    # Process the TTP instances and save results
-    #output_file = 'results.json'
-    #print("okay")
     parallel_process_ttp(input_folders_results_random, output_files)
 
-    #print(f"Results saved to {output_file}")
