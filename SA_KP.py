@@ -23,7 +23,7 @@ def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=1
     W = round(Tr * total_weight_ttp_instance)
     vmax, vmin, R = 1.0, 0.1, 1.0
 
-    best_knapsack = current_packinglist[:]
+    #best_knapsack = packinglist[:]
     best_tour = random_sample['random_tour']
     best_fitness = random_sample['OB_value']
     current_tour = best_tour[:]
@@ -34,7 +34,7 @@ def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=1
 
     for _ in range(iterations):
         # Generate a neighboring solution
-        new_packinglist = current_packinglist[:]
+        new_packinglist = packinglist[:]
         random_item_id = random.randint(0, num_items - 1)
         random_item = item_dict.get(random_item_id)
 
