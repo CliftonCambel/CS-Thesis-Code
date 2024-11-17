@@ -72,7 +72,7 @@ def process_ttp_instances_results_hill_KP( input_folders_results_random, output_
                 'old_random_tour':result['random_tour'],
                 'best_new_tour': best_tour,
                 'old_actual_fixed_packinglist':result['random_actual_packing_list'],
-                'old_actual_fixed_packinglist':best_knapsack,
+                'optimized_packinglist': best_knapsack,
                 'initial_OB_value':result['OB_value'],
                 'new_OB_value': best_value,
                 'computing_time': computing_time
