@@ -10,28 +10,19 @@ from tqdm import tqdm
 from functools import partial
 import math
 
-
-def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperature=1000, cooling_rate=0.99):
+def simulated_annealing_tsp_swap(ttp, random_sample, iterations, initial_temperature=1000, cooling_rate=0.99):
     cities = ttp['cities']
     items = ttp['items']
     distances = ttp['distances']
     num_cities = len(cities)
-    num_items = len(items)
     packinglist = random_sample['random_actual_packing_list']
     total_weight_ttp_instance = sum(item['weight'] for item in items)
 
-    Tr = 0.25  # Tightness ratio interval [0,1], suggested 0.25,0.5,0.75
-    W = round(Tr * total_weight_ttp_instance)  # Example formula, may be adjusted
-    vmax = 1.0
-    vmin = 0.1
-    R = 1.0
+    Tr = 0.25  # Tightness ratio interval [0,1]
+    W = round(Tr * total_weight_ttp_instance)
+    vmax, vmin, R = 1.0, 0.1, 1.0
 
     best_tour = random_sample['random_tour']
-    best_fitness = random_sample['OB_value']
-    current_tour = best_tour[:]
-    current_packinglist = packinglist[:]
-    current_fitness = best_fitness
-
     if not isinstance(best_tour, list):
         raise ValueError("Expected `random_tour` to be a list, but got an integer or other non-iterable object.")
 
@@ -39,56 +30,46 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
     if best_tour[0] != 0 or best_tour[-1] != 0:
         best_tour = [0] + [city for city in best_tour if city != 0] + [0]
 
+    best_value = random_sample['OB_value']
+    current_tour = best_tour[:]
+    current_value = best_value
     temperature = initial_temperature
 
     for _ in range(iterations):
-        # Generate a neighboring solution by swapping two cities
+        # Generate a new tour by swapping two cities
         new_tour = current_tour[:]
         if num_cities > 2:  # Ensure there's enough to swap
             i, j = random.sample(range(1, num_cities - 1), 2)
             new_tour[i], new_tour[j] = new_tour[j], new_tour[i]
 
-        # Generate a neighboring solution by changing the knapsack content
-        new_packinglist = current_packinglist[:]
-        if random.random() < 0.5:  # 50% chance to add or remove an item
-            random_item_id = random.randint(0, num_items - 1)
-            random_item = [item for item in items if item['id'] == random_item_id]
-
-            if random_item_id not in new_packinglist and random_item and sum(item['weight'] for item in new_packinglist) + random_item[0]['weight'] <= W:
-                new_packinglist.append(random_item_id)
-            elif new_packinglist:
-                new_packinglist.remove(random.choice(new_packinglist))
-
-        # Evaluate the new solution
-        new_fitness, _, _ = TTP_random_tour_and_packing_list.objective_function(
-            new_tour, new_packinglist, items, distances, vmax, vmin, W, R
+        # Evaluate the new tour
+        new_value, _, _ = TTP_random_tour_and_packing_list.objective_function(
+            new_tour, packinglist, items, distances, vmax, vmin, W, R
         )
 
         # Calculate change in fitness
-        delta_fitness = new_fitness - current_fitness
+        delta_value = new_value - current_value
 
-        # Accept the new solution probabilistically
-        if delta_fitness > 0 or random.random() < math.exp(delta_fitness / temperature):
+        # Accept new solution based on simulated annealing acceptance criteria
+        if delta_value > 0 or random.random() < math.exp(delta_value / temperature):
             current_tour = new_tour
-            current_packinglist = new_packinglist
-            current_fitness = new_fitness
+            current_value = new_value
 
-        # Update the best solution found
-        if current_fitness > best_fitness:
-            best_fitness = current_fitness
-            best_tour = current_tour[:]
-            best_knapsack = current_packinglist[:]
+            # Update the best solution if the new one is better
+            if current_value > best_value:
+                best_value = current_value
+                best_tour = current_tour[:]
 
-        # Decrease the temperature
+        # Cool the temperature
         temperature *= cooling_rate
 
         # Optional: Stop early if the temperature is very low
         #if temperature < 1e-3:
         #    break
 
-    return best_tour, best_knapsack, best_fitness
+    return best_tour, best_value
 
-def process_ttp_instances_results_SA_hybride( input_folders_results_random, output_file):
+def process_ttp_instances_results_SA_swap( input_folders_results_random, output_file):
     results = []
     iterations = 10000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
@@ -99,7 +80,7 @@ def process_ttp_instances_results_SA_hybride( input_folders_results_random, outp
             return
         ttp_problem_instance = Hillclimber_TSP_swaping.load_json(filename_problem_instance)
         start_time = time.time()  
-        best_tour, best_knapsack, best_value = simulated_annealing_hybrid(ttp_problem_instance, result,iterations)
+        best_tour, best_value = simulated_annealing_tsp_swap(ttp_problem_instance, result,iterations)
         end_time = time.time()
         computing_time = end_time - start_time
         results.append({
@@ -107,8 +88,8 @@ def process_ttp_instances_results_SA_hybride( input_folders_results_random, outp
                 'Iteration_random_sample':result['Iteration'],
                 'old_random_tour':result['random_tour'],
                 'best_new_tour': best_tour,
-                'old_actual_fixed_packinglist':result['random_actual_packing_list'],
-                'optimized_packinglist':best_knapsack,
+                'fixed_packinglist':result['random_packing_list'],
+                'actual_fixed_packinglist':result['random_actual_packing_list'],
                 'initial_OB_value':result['OB_value'],
                 'new_OB_value': best_value,
                 'computing_time': computing_time
@@ -116,22 +97,19 @@ def process_ttp_instances_results_SA_hybride( input_folders_results_random, outp
         if idx % 100 == 0 or idx == len(random_results):
             Hillclimber_TSP_swaping.save_to_json(results, output_file)
 
-
 def parallel_process_ttp(input_folders_results_random, output_files):
     try:
         num_tasks = len(list(zip(input_folders_results_random, output_files)))
         cpu_count_sys = cpu_count()
         num_cores = min(cpu_count_sys, num_tasks)
-
         with Pool(num_cores) as pool:
-            pool.starmap(process_ttp_instances_results_SA_hybride, zip(input_folders_results_random, output_files))
-
+            pool.starmap(process_ttp_instances_results_SA_swap, zip(input_folders_results_random, output_files))
     except Exception as e:
         print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
-    os.makedirs('tour_results/SA_hybride_results', exist_ok=True)
+    os.makedirs('tour_results/hillclimber_tsp_swapping_results', exist_ok=True)
     input_folders_problem_instances = []
     input_folders_results_random = []
     output_files = []
@@ -139,12 +117,11 @@ if __name__ == "__main__":
     for cities in range(20, 120, 20):
         for n in range(1, 5): 
             items = n * cities
-            name_directory = f'tour_results/SA_hybride_results/TTP_instances_{cities}_items_{items}'
+            name_directory = f'tour_results/hillclimber_tsp_swapping_results/TTP_instances_{cities}_items_{items}'
             os.makedirs(name_directory, exist_ok=True)
             input_folder_results_random = f'tour_results/random_results/TTP_instances_{cities}_items_{items}'
             input_folders_results_random.append(input_folder_results_random)
-            output_file=f'{name_directory}/results_SA_tsp_cities_{cities}_items_{items}.json'
+            output_file=f'{name_directory}/results_hillclimber_tsp_cities_{cities}_items_{items}.json'
             output_files.append(output_file)
     parallel_process_ttp(input_folders_results_random, output_files)
-
 
