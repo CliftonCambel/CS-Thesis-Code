@@ -50,6 +50,7 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
 
         # Generate a neighboring solution by changing the knapsack content
         new_packinglist = current_packinglist[:]
+        best_knapsack = current_packinglist[:]
         if random.random() < 0.5:  # 50% chance to add or remove an item
             random_item_id = random.randint(0, num_items - 1)
             random_item = [item for item in items if item['id'] == random_item_id]
