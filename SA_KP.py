@@ -70,7 +70,7 @@ def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=1
 
     return best_tour, best_knapsack, best_fitness
 
-def process_ttp_instances_results_hill_KP( input_folders_results_random, output_file):
+def process_ttp_instances_results_SA_KP( input_folders_results_random, output_file):
     results = []
     iterations = 10000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
@@ -104,7 +104,7 @@ def parallel_process_ttp(input_folders_results_random, output_files):
         cpu_count_sys = cpu_count()
         num_cores = min(cpu_count_sys, num_tasks)
         with Pool(num_cores) as pool:
-            pool.starmap(process_ttp_instances_results_hill_KP, zip(input_folders_results_random, output_files))
+            pool.starmap(process_ttp_instances_results_SA_KP, zip(input_folders_results_random, output_files))
     except Exception as e:
         print(f"An error occurred: {e}")
 
