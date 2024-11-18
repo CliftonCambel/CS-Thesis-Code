@@ -26,11 +26,10 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
     vmin = 0.1
     R = 1.0
 
-    best_knapsack = packinglist[:]
     best_tour = random_sample['random_tour']
     best_fitness = random_sample['OB_value']
-    current_tour = best_tour[:]
-    current_packinglist = packinglist[:]
+    #current_tour = best_tour[:]
+    #current_packinglist = packinglist[:]
     current_fitness = best_fitness
 
     if not isinstance(best_tour, list):
@@ -44,14 +43,15 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
 
     for _ in range(iterations):
         # Generate a neighboring solution by swapping two cities
-        new_tour = current_tour[:]
+        new_tour = best_tour[:]
         if num_cities > 2:  # Ensure there's enough to swap
             i, j = random.sample(range(1, num_cities - 1), 2)
+             # Swap the two cities
             new_tour[i], new_tour[j] = new_tour[j], new_tour[i]
 
         # Generate a neighboring solution by changing the knapsack content
-        new_packinglist = current_packinglist[:]
-        best_knapsack = current_packinglist[:]
+        new_packinglist = packinglist[:]
+   
         if random.random() < 0.5:  # 50% chance to add or remove an item
             random_item_id = random.randint(0, num_items - 1)
             random_item = [item for item in items if item['id'] == random_item_id]
@@ -62,9 +62,7 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
                 new_packinglist.remove(random.choice(new_packinglist))
 
         # Evaluate the new solution
-        new_fitness, _, _ = TTP_random_tour_and_packing_list.objective_function(
-            new_tour, new_packinglist, items, distances, vmax, vmin, W, R
-        )
+        new_fitness, _, _ = TTP_random_tour_and_packing_list.objective_function(new_tour, new_packinglist, items, distances, vmax, vmin, W, R)
 
         # Calculate change in fitness
         delta_fitness = new_fitness - current_fitness
