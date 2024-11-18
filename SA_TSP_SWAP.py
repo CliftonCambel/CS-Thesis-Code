@@ -108,7 +108,7 @@ def parallel_process_ttp(input_folders_results_random, output_files):
 
 
 if __name__ == "__main__":
-    os.makedirs('tour_results/hillclimber_tsp_swapping_results', exist_ok=True)
+    os.makedirs('tour_results/SA_tsp_swapping_results', exist_ok=True)
     input_folders_problem_instances = []
     input_folders_results_random = []
     output_files = []
@@ -116,11 +116,11 @@ if __name__ == "__main__":
     for cities in range(20, 120, 20):
         for n in range(1, 5): 
             items = n * cities
-            name_directory = f'tour_results/hillclimber_tsp_swapping_results/TTP_instances_{cities}_items_{items}'
+            name_directory = f'tour_results/SA_tsp_swapping_results/TTP_instances_{cities}_items_{items}'
             os.makedirs(name_directory, exist_ok=True)
             input_folder_results_random = f'tour_results/random_results/TTP_instances_{cities}_items_{items}'
             input_folders_results_random.append(input_folder_results_random)
-            output_file=f'{name_directory}/results_hillclimber_tsp_cities_{cities}_items_{items}.json'
+            output_file=f'{name_directory}/results_SA_tsp_cities_{cities}_items_{items}.json'
             output_files.append(output_file)
     parallel_process_ttp(input_folders_results_random, output_files)
 
