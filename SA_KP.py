@@ -10,7 +10,7 @@ from tqdm import tqdm
 from functools import partial
 import math
 
-def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=1000, cooling_rate=0.99):
+def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=5000, cooling_rate=0.999):
     #cities = ttp['cities']
     items = ttp['items']
     item_dict = {item['id']: item for item in items}  # Precompute item lookup
@@ -41,7 +41,8 @@ def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=1
         if random_item and random_item_id not in new_packinglist and sum(item['weight'] for item in items) + random_item['weight'] <= W:
             new_packinglist.append(random_item_id)
         elif new_packinglist:
-            new_packinglist.remove(random.choice(new_packinglist))
+            item_to_remove = random.choice(new_packinglist)
+            new_packinglist.remove(item_to_remove)
 
         # Evaluate the new solution
         new_fitness, _, _ = TTP_random_tour_and_packing_list.objective_function(

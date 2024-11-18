@@ -28,8 +28,8 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
 
     best_tour = random_sample['random_tour']
     best_fitness = random_sample['OB_value']
-    #current_tour = best_tour[:]
-    #current_packinglist = packinglist[:]
+    current_tour = best_tour[:]
+    current_packinglist = packinglist[:]
     current_fitness = best_fitness
 
     if not isinstance(best_tour, list):
@@ -45,10 +45,12 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
         # Generate a neighboring solution by swapping two cities
         new_tour = best_tour[:]
         if num_cities > 2:  # Ensure there's enough to swap
+            new_tour = current_tour[:]
             i, j = random.sample(range(1, num_cities - 1), 2)
              # Swap the two cities
             new_tour[i], new_tour[j] = new_tour[j], new_tour[i]
-
+        else:
+            new_tour = current_tour[:]
         # Generate a neighboring solution by changing the knapsack content
         new_packinglist = packinglist[:]
    
@@ -59,7 +61,8 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
             if random_item_id not in new_packinglist and random_item and sum(item['weight'] for item in new_packinglist) + random_item[0]['weight'] <= W:
                 new_packinglist.append(random_item_id)
             elif new_packinglist:
-                new_packinglist.remove(random.choice(new_packinglist))
+                item_to_remove = random.choice(new_packinglist)
+                new_packinglist.remove(item_to_remove)
 
         # Evaluate the new solution
         new_fitness, _, _ = TTP_random_tour_and_packing_list.objective_function(new_tour, new_packinglist, items, distances, vmax, vmin, W, R)
