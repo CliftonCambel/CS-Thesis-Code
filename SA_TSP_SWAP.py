@@ -38,9 +38,8 @@ def simulated_annealing_tsp_swap(ttp, random_sample, iterations, initial_tempera
     for _ in range(iterations):
         # Generate a new tour by swapping two cities
         new_tour = current_tour[:]
-        if num_cities > 2:  # Ensure there's enough to swap
-            i, j = random.sample(range(1, num_cities - 1), 2)
-            new_tour[i], new_tour[j] = new_tour[j], new_tour[i]
+        i, j = random.sample(range(1, num_cities - 1), 2)
+        new_tour[i], new_tour[j] = new_tour[j], new_tour[i]
 
         # Evaluate the new tour
         new_value, _, _ = TTP_random_tour_and_packing_list.objective_function(
@@ -56,9 +55,9 @@ def simulated_annealing_tsp_swap(ttp, random_sample, iterations, initial_tempera
             current_value = new_value
 
             # Update the best solution if the new one is better
-            if current_value > best_value:
-                best_value = current_value
-                best_tour = current_tour[:]
+        if current_value > best_value:
+            best_value = current_value
+            best_tour = current_tour[:]
 
         # Cool the temperature
         temperature *= cooling_rate
