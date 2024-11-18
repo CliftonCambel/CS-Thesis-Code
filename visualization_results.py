@@ -120,11 +120,11 @@ if __name__ == "__main__":
         for cities in range(20, 120, 20):
             for n in range (1,5,1):     
                 items=n*cities          
-                results_filename = f'tour_results/random_results/TTP_instances_{cities}_items_{items}/results_random_iteration_{i}_cities_{cities}_items_{items}.json'
+         #       results_filename = f'tour_results/random_results/TTP_instances_{cities}_items_{items}/results_random_iteration_{i}_cities_{cities}_items_{items}.json'
                 output_filename=f'plots/visualization_random_tour_cities_iteration_{i}_cities_{cities}_items_{items}.png'
-                results = load_results(results_filename)
-                plot_histograms_random(results,output_filename)
-                print(f"Results saved to {output_filename}")
+           #     results = load_results(results_filename)
+            #    plot_histograms_random(results,output_filename)
+          #      print(f"Results saved to {output_filename}")
 #results_filename = 'results_random.json'
 #results = load_results(results_filename,'visualization_random_tour_cities_20_items_20')
     for cities in range(20, 120, 20):
@@ -137,8 +137,8 @@ if __name__ == "__main__":
             result_file=f'tour_results/hillclimber_tsp_swapping_results/TTP_instances_{cities}_items_{items}/results_hillclimber_tsp_cities_{cities}_items_{items}.json'
             output_filename=f'plots/visualization_hillclimber_test_cities_iteration_cities_{cities}_items_{items}.png'
             results = load_results(result_file)
-            plot_histograms_comparing(results,output_filename)
-            print(f"Results saved to {output_filename}")
+          #  plot_histograms_comparing(results,output_filename)
+         #   print(f"Results saved to {output_filename}")
     
     for cities in range(20, 120, 20):
         #print(cities)
