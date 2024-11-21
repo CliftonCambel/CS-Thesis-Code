@@ -35,7 +35,7 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
    # current_fitness = best_fitness
 
     best_knapsack = packinglist[:]
-    #best_tour = random_sample['random_tour']
+    best_tour = random_sample['random_tour']
     best_fitness = random_sample['OB_value']
     current_tour = best_tour[:]
     current_packinglist = packinglist[:]
