@@ -9,8 +9,10 @@ import logging
 from tqdm import tqdm
 from functools import partial
 import math
-
-def simulated_annealing_tsp_swap(ttp, random_sample, iterations, initial_temperature=1000, cooling_rate=0.99):
+#first round initial_temperature=1000, coolingrate 0.99
+#second round initial_temperature=5000, coolingrate 0.999
+#third round initial_temperature=10000, coolingrate 0.9999
+def simulated_annealing_tsp_swap(ttp, random_sample, iterations, initial_temperature=5000, cooling_rate=0.999):
     cities = ttp['cities']
     items = ttp['items']
     distances = ttp['distances']

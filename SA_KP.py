@@ -10,7 +10,10 @@ from tqdm import tqdm
 from functools import partial
 import math
 
-def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=5000, cooling_rate=0.999):
+#first round initial_temperature=1000, coolingrate 0.99
+#second round initial_temperature=5000, coolingrate 0.999
+#third round initial_temperature=10000, coolingrate 0.9999
+def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=10000, cooling_rate=0.9990):
     #cities = ttp['cities']
     items = ttp['items']
     item_dict = {item['id']: item for item in items}  # Precompute item lookup
@@ -31,7 +34,7 @@ def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=5
     current_fitness = best_fitness
 
     temperature = initial_temperature
-
+#
     for _ in range(iterations):
         # Generate a neighboring solution
         new_packinglist = packinglist[:]
