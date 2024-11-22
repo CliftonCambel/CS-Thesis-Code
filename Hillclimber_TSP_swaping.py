@@ -71,9 +71,12 @@ def hillclimber_tsp_swap(ttp, random_sample, iterations):
     return best_tour, best_value
 
 # Read TTP instances from JSON files and save results
+#first iteration 1000 test
+#second iteration 10000 
+#third iteration 100000
 def process_ttp_instances_results_hill_swap( input_folders_results_random, output_file):
     results = []
-    iterations = 10000
+    iterations = 100000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
     for idx, result in enumerate(random_results, start=1):
         filename_problem_instance = result['problem_instance_filename']

@@ -45,9 +45,12 @@ def hill_climb_KP(ttp, random_sample, iterations):
 
     return best_tour, best_knapsack, best_fitness
 
+#first iteration 1000 test
+#second iteration 10000 
+#third iteration 100000
 def process_ttp_instances_results_hill_KP( input_folders_results_random, output_file):
     results = []
-    iterations = 10000
+    iterations = 100000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
     #print('okay')
     for idx, result in enumerate(random_results, start=1):
