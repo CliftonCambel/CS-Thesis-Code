@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J run_hillclimber_tsp
+#SBATCH -J run_grid_aco
 #SBATCH -N 1                        
 #SBATCH --ntasks=1                       
 #SBATCH --cpus-per-task=20               
