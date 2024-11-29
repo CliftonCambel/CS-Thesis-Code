@@ -3,7 +3,9 @@ import numpy as np
 import TTP_random_tour_and_packing_list
 import Hillclimber_TSP_swaping
 import os
-
+from multiprocessing import Pool, cpu_count
+import time
+import Iteration_search
 
 def initialize_pheromone(ttp):
     num_cities = len(ttp['cities'])
@@ -118,10 +120,45 @@ def ant_colony_optimization(ttp, num_ants, alpha, beta, evaporation_rate, q, ite
 
     return best_tour, best_packing_list, best_fitness
 
+def process_ttp_instances_results_ACO( input_files,output_file):
+    results = []
+    problem_instances=Iteration_search.load_iteration_results(input_files)
+    for idx, problem_instance in enumerate(problem_instances, start=1):
+        #ttp_problem_instance = Hillclimber_TSP_swaping.load_json(filename_problem_instance)
+        start_time = time.time()  
+        best_tour, best_value = hillclimber_tsp_swap(ttp_problem_instance, result,iterations)
+        end_time = time.time()
+        computing_time = end_time - start_time
+        results.append({
+                'filename': filename_problem_instance,
+                'Iteration_random_sample':result['Iteration'],
+                'old_random_tour':result['random_tour'],
+                'best_new_tour': best_tour,
+                'fixed_packinglist':result['random_packing_list'],
+                'actual_fixed_packinglist':result['random_actual_packing_list'],
+                'initial_OB_value':result['OB_value'],
+                'new_OB_value': best_value,
+                'computing_time': computing_time
+            })
+        if idx % 100 == 0 or idx == len(random_results):
+            Hillclimber_TSP_swaping.save_to_json(results, output_file)
+
+def parallel_process_ttp(input_files,output_files):
+    try:
+        num_tasks = len(list(zip(output_files)))
+        cpu_count_sys = cpu_count()
+        num_cores = min(cpu_count_sys, num_tasks)
+        with Pool(num_cores) as pool:
+            pool.starmap(process_ttp_instances_results_ACO, zip(input_folders, output_files))
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
 if __name__ == "__main__":
     os.makedirs('tour_results/aco_results', exist_ok=True)
-    input_folders_problem_instances = []
-    input_folders_results_random = []
+  #  input_folders_problem_instances = []
+  #  input_folders_results_random = []
+    input_folders = []
     output_files = []
 
     for cities in range(20, 120, 20):
@@ -129,8 +166,12 @@ if __name__ == "__main__":
             items = n * cities
             name_directory = f'tour_results/aco_results/TTP_instances_{cities}_items_{items}'
             os.makedirs(name_directory, exist_ok=True)
-            output_file=f'{name_directory}/results_hillclimber_tsp_cities_{cities}_items_{items}.json'
+            input_folder = f'problem_instances_ttp/json_files_TTP_instances_{cities}_items_{items}'
+            output_file=f'{name_directory}/results_aco_{cities}_items_{items}.json'
+            input_folders.append(input_folder)
             output_files.append(output_file)
+    parallel_process_ttp(input_folders, output_files)
+
     # Example usage
     ttp = Hillclimber_TSP_swaping.load_json('problem_instances_ttp/json_files_TTP_instances_20_items_20/traveling_thief_problem_cities_20_items_20_1.json')
     #C:\Users\ccroo\OneDrive\Bureaublad\CS-Thesis-Code\problem_instances_ttp\json_files_TTP_instances_20_items_20\traveling_thief_problem_cities_20_items_20_1.json
