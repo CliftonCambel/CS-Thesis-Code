@@ -2,6 +2,8 @@ import random
 import numpy as np
 import TTP_random_tour_and_packing_list
 import Hillclimber_TSP_swaping
+import os
+
 
 def initialize_pheromone(ttp):
     num_cities = len(ttp['cities'])
@@ -117,7 +119,18 @@ def ant_colony_optimization(ttp, num_ants, alpha, beta, evaporation_rate, q, ite
     return best_tour, best_packing_list, best_fitness
 
 if __name__ == "__main__":
+    os.makedirs('tour_results/aco_results', exist_ok=True)
+    input_folders_problem_instances = []
+    input_folders_results_random = []
+    output_files = []
 
+    for cities in range(20, 120, 20):
+        for n in range(1, 5): 
+            items = n * cities
+            name_directory = f'tour_results/aco_results/TTP_instances_{cities}_items_{items}'
+            os.makedirs(name_directory, exist_ok=True)
+            output_file=f'{name_directory}/results_hillclimber_tsp_cities_{cities}_items_{items}.json'
+            output_files.append(output_file)
     # Example usage
     ttp = Hillclimber_TSP_swaping.load_json('problem_instances_ttp/json_files_TTP_instances_20_items_20/traveling_thief_problem_cities_20_items_20_1.json')
     #C:\Users\ccroo\OneDrive\Bureaublad\CS-Thesis-Code\problem_instances_ttp\json_files_TTP_instances_20_items_20\traveling_thief_problem_cities_20_items_20_1.json
