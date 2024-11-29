@@ -45,7 +45,7 @@ def construct_solution(ttp, W ,pheromone_cities, pheromone_items, alpha, beta):
         probabilities = calculate_probabilities(
             current_city, tour, pheromone_cities, ttp['distances'], alpha, beta
         )
-        print(f"Probabilities: {probabilities}")
+        #print(f"Probabilities: {probabilities}")
         next_city = np.random.choice(city_ids, p=probabilities)
         tour.append(next_city)
     tour.append(0)  # End the tour at city 
@@ -116,13 +116,15 @@ def ant_colony_optimization(ttp, num_ants, alpha, beta, evaporation_rate, q, ite
 
     return best_tour, best_packing_list, best_fitness
 
-# Example usage
-ttp = Hillclimber_TSP_swaping.load_json('problem_instances_ttp/json_files_TTP_instances_20_items_20/traveling_thief_problem_cities_20_items_20_1.json')
-#C:\Users\ccroo\OneDrive\Bureaublad\CS-Thesis-Code\problem_instances_ttp\json_files_TTP_instances_20_items_20\traveling_thief_problem_cities_20_items_20_1.json
-best_tour, best_packing_list, best_fitness = ant_colony_optimization(
-    ttp, num_ants=10, alpha=1, beta=2, evaporation_rate=0.5, q=100, iterations=100
-)
+if __name__ == "__main__":
 
-print(f"Best Tour: {best_tour}")
-print(f"Best Packing List: {best_packing_list}")
-print(f"Best Fitness: {best_fitness}")
+    # Example usage
+    ttp = Hillclimber_TSP_swaping.load_json('problem_instances_ttp/json_files_TTP_instances_20_items_20/traveling_thief_problem_cities_20_items_20_1.json')
+    #C:\Users\ccroo\OneDrive\Bureaublad\CS-Thesis-Code\problem_instances_ttp\json_files_TTP_instances_20_items_20\traveling_thief_problem_cities_20_items_20_1.json
+    best_tour, best_packing_list, best_fitness = ant_colony_optimization(
+        ttp, num_ants=40, alpha=1, beta=2, evaporation_rate=0.5, q=100, iterations=100
+    )
+
+    print(f"Best Tour: {best_tour}")
+    print(f"Best Packing List: {best_packing_list}")
+    print(f"Best Fitness: {best_fitness}")
