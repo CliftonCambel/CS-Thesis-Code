@@ -126,7 +126,7 @@ def process_ttp_instances_results_ACO( input_files,output_file):
     for idx, problem_instance in enumerate(problem_instances, start=1):
         #ttp_problem_instance = Hillclimber_TSP_swaping.load_json(filename_problem_instance)
         start_time = time.time()  
-        best_tour, best_value = hillclimber_tsp_swap(ttp_problem_instance, result,iterations)
+        best_tour, best_value = ant_colony_optimization(problem_instance, result,iterations)
         end_time = time.time()
         computing_time = end_time - start_time
         results.append({
