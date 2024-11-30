@@ -7,11 +7,13 @@ import Hillclimber_TSP_swaping
 from multiprocessing import Pool, cpu_count
 
 
+
 # Load problem instance file paths
 def load_problem_instances(base_dir, size_group_dir):
     group_path = os.path.join(base_dir, size_group_dir)
     files = [os.path.join(group_path, f) for f in os.listdir(group_path) if f.endswith('.json')]
     return files
+
 
 def run_aco_on_instance(args):
     """Run ACO on a single problem instance."""
@@ -27,19 +29,27 @@ def run_aco_on_instance(args):
     )
     return fitness
 
+def calculate_variance(fitness_scores):
+    """Calculate variance of fitness scores."""
+    mean = sum(fitness_scores) / len(fitness_scores)
+    variance = sum((x - mean) ** 2 for x in fitness_scores) / len(fitness_scores)
+    return variance
+
 def grid_search_ACO():
     # Parameter ranges
-    #num_ants_range = [10, 20, 50]
-    alpha_range = [0.5, 1.0, 2.0]
-    beta_range = [1.0, 2.0, 5.0]
-    evaporation_rate_range = [0.3, 0.5, 0.7]
-    q_range = [0.05, 0.1, 0.2]
-    iterations_range = [50, 100, 200]
+    alpha_range = [0.5, 1.5]
+    beta_range = [1.0, 3.0]
+    evaporation_rate_range = [0.3, 0.7]
+    q_range = [0.1, 0.2]
+    iterations_range = [50, 100]
 
 
     # All parameter combinations
     #parameter_grid = list(itertools.product(num_ants_range, alpha_range, beta_range, evaporation_rate_range, q_range))
-
+    # Global parameter grid
+    global_parameter_grid = list(itertools.product(
+        alpha_range, beta_range, evaporation_rate_range, q_range, iterations_range
+    ))
 
 # Randomly sample from each group
     size_groups = {
@@ -66,54 +76,58 @@ def grid_search_ACO():
     }
 
     base_dir = "problem_instances_ttp"
-
     problem_files = {group: load_problem_instances(base_dir, dir_name) for group, dir_name in size_groups.items()}
- 
+
     sampled_instances = {
-    group: random.sample(files, k=min(len(files), 5)) 
-    for group, files in problem_files.items()
-    }
-    
-    sampled_problems = {
-    group: [ Hillclimber_TSP_swaping.load_json(file) for file in files]
-    for group, files in sampled_instances.items()
+        group: random.sample(files, k=min(len(files), 5)) for group, files in problem_files.items()
     }
 
+    sampled_problems = {
+        group: [Hillclimber_TSP_swaping.load_json(file) for file in files]
+        for group, files in sampled_instances.items()
+    }
 
     # Results storage
     results = []
 
     # Grid search over sampled instances
     for group, problems in sampled_problems.items():
-        for ttp in problems:    
-            num_cities = len(ttp["cities"])  # Get the number of cities for the instance
-            num_ants_range = [max(1, num_cities // 2), num_cities, 2 * num_cities]  # Dynamic range for num_ants
-            parameter_grid = list(itertools.product(num_ants_range, alpha_range, beta_range, evaporation_rate_range, q_range,iterations_range))
-            for params in parameter_grid:
-                # Prepare arguments for multithreading
-                args_list = [(ttp, params) for ttp in problems]
+        for ttp in problems:
+            num_cities = len(ttp["cities"])
+            num_ants_range = [max(1, num_cities // 2), num_cities, 2 * num_cities]
 
-                # Use ThreadPoolExecutor to run ACO on multiple instances in parallel
-                num_tasks = len(args_list)
-                cpu_count_sys = cpu_count()
-                num_cores = min(cpu_count_sys, num_tasks)
-                with Pool(num_cores) as pool:
-                    fitness_scores = pool.map(run_aco_on_instance, args_list)
+            # Batch parallel processing
+            args_list = [
+                (ttp, (num_ants, *params))
+                for num_ants in num_ants_range
+                for params in global_parameter_grid
+            ]
 
-                # Record average fitness for this parameter combination and instance group
-                avg_fitness = sum(fitness_scores) / len(fitness_scores)
+            # Parallel execution
+            cpu_count_sys = cpu_count()
+            num_cores = min(cpu_count_sys, len(args_list))
+            with Pool(num_cores) as pool:
+                fitness_scores = pool.map(run_aco_on_instance, args_list)
+
+            # Record results
+            for (params, fitness) in zip(args_list, fitness_scores):
+                ttp_params = params[1]
                 results.append({
                     "group": group,
-                    "num_ants": params[0],
-                    "alpha": params[1],
-                    "beta": params[2],
-                    "evaporation_rate": params[3],
-                    "q_percentage": params[4],
-                    "iterations": params[5],
-                    "avg_fitness": avg_fitness
+                    "num_ants": ttp_params[0],
+                    "alpha": ttp_params[1],
+                    "beta": ttp_params[2],
+                    "evaporation_rate": ttp_params[3],
+                    "q_percentage": ttp_params[4],
+                    "iterations": ttp_params[5],
+                    "avg_fitness": fitness
                 })
 
-    return results
+        # Save intermediate results to avoid data loss
+        with open("aco_intermediate_results.json", "w") as f:
+            json.dump(results, f)
+
+    return result
 
 if __name__ == "__main__":
     results=grid_search_ACO()
