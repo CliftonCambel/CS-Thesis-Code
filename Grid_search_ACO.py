@@ -127,7 +127,7 @@ def grid_search_ACO():
         with open("aco_intermediate_results.json", "w") as f:
             json.dump(results, f)
 
-    return result
+    return results
 
 if __name__ == "__main__":
     results=grid_search_ACO()
