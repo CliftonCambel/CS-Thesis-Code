@@ -1,7 +1,6 @@
 import ACO
 import random
 import itertools
-import pandas as pd
 import os
 import Hillclimber_TSP_swaping
 from multiprocessing import Pool, cpu_count
@@ -107,6 +106,7 @@ def grid_search_ACO():
             # Parallel execution
             cpu_count_sys = cpu_count()
             num_cores = min(cpu_count_sys, len(args_list))
+            #print (len(args_list))
             with Pool(num_cores) as pool:
                 fitness_scores = pool.map(run_aco_on_instance, args_list)
 
@@ -131,13 +131,24 @@ def grid_search_ACO():
     return results
 
 if __name__ == "__main__":
-    results=grid_search_ACO()
-    # Convert results to DataFrame
-    df = pd.DataFrame(results)
+    results = grid_search_ACO()
 
     # Find the best parameters for each group
-    best_params = df.groupby("group").apply(lambda x: x.nlargest(1, "avg_fitness"))
-    print(best_params)
+    grouped_results = {}
+    for result in results:
+        group = result["group"]
+        if group not in grouped_results:
+            grouped_results[group] = []
+        grouped_results[group].append(result)
 
-    # Save results to a CSV file for later analysis
-    df.to_csv("aco_grid_search_results.csv", index=False)
+    best_params = {}
+    for group, group_results in grouped_results.items():
+        best_params[group] = max(group_results, key=lambda x: x["fitness"])
+
+    # Print best parameters
+    for group, params in best_params.items():
+        print(f"Best parameters for {group}: {params}")
+
+    # Save results to a JSON file for later analysis
+    with open("aco_grid_search_results.json", "w") as f:
+        json.dump(results, f)
