@@ -121,7 +121,7 @@ def grid_search_ACO():
                     "evaporation_rate": ttp_params[3],
                     "q_percentage": ttp_params[4],
                     "iterations": ttp_params[5],
-                    "avg_fitness": fitness
+                    "fitness": fitness
                 })
 
         # Save intermediate results to avoid data loss
