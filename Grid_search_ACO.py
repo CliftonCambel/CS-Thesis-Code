@@ -16,14 +16,14 @@ def load_problem_instances(base_dir, size_group_dir):
 def run_aco_on_instance(args):
     """Run ACO on a single problem instance."""
     ttp, params = args
-    num_ants, alpha, beta, evaporation_rate, q_percentage = params
+    num_ants, alpha, beta, evaporation_rate, q_percentage, iterations = params
     total_item_value = sum(item["value"] for item in ttp["items"])
     q = q_percentage * total_item_value
 
     # Run ACO and return fitness
     _, _, fitness = ACO.ant_colony_optimization(
         ttp, num_ants=num_ants, alpha=alpha, beta=beta,
-        evaporation_rate=evaporation_rate, q=q, iterations=100
+        evaporation_rate=evaporation_rate, q=q, iterations=iterations
     )
     return fitness
 
@@ -34,6 +34,8 @@ def grid_search_ACO():
     beta_range = [1.0, 2.0, 5.0]
     evaporation_rate_range = [0.3, 0.5, 0.7]
     q_range = [0.05, 0.1, 0.2]
+    iterations_range = [50, 100, 200]
+
 
     # All parameter combinations
     #parameter_grid = list(itertools.product(num_ants_range, alpha_range, beta_range, evaporation_rate_range, q_range))
@@ -86,7 +88,7 @@ def grid_search_ACO():
         for ttp in problems:    
             num_cities = len(ttp["cities"])  # Get the number of cities for the instance
             num_ants_range = [max(1, num_cities // 2), num_cities, 2 * num_cities]  # Dynamic range for num_ants
-            parameter_grid = list(itertools.product(num_ants_range, alpha_range, beta_range, evaporation_rate_range, q_range))
+            parameter_grid = list(itertools.product(num_ants_range, alpha_range, beta_range, evaporation_rate_range, q_range,iterations_range))
             for params in parameter_grid:
                 # Prepare arguments for multithreading
                 args_list = [(ttp, params) for ttp in problems]
@@ -107,6 +109,7 @@ def grid_search_ACO():
                     "beta": params[2],
                     "evaporation_rate": params[3],
                     "q_percentage": params[4],
+                    "iterations": params[5],
                     "avg_fitness": avg_fitness
                 })
 
