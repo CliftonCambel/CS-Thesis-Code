@@ -30,11 +30,11 @@ def run_aco_on_instance(args):
     )
     return fitness
 
-def calculate_variance(fitness_scores):
-    """Calculate variance of fitness scores."""
-    mean = sum(fitness_scores) / len(fitness_scores)
-    variance = sum((x - mean) ** 2 for x in fitness_scores) / len(fitness_scores)
-    return variance
+#def calculate_variance(fitness_scores):
+#    """Calculate variance of fitness scores."""
+#    mean = sum(fitness_scores) / len(fitness_scores)
+#    variance = sum((x - mean) ** 2 for x in fitness_scores) / len(fitness_scores)
+#    return variance
 
 def grid_search_ACO():
     # Parameter ranges
