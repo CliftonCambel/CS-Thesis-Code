@@ -21,11 +21,6 @@ def initialize_pheromone(ttp):
 def calculate_probabilities(current_city, visited_cities, pheromone_matrix, distances, alpha, beta):
     probabilities = []
     num_cities = len(pheromone_matrix)
-    #print(f"Current City: {current_city}")
-    #print(f"Visited Cities: {visited_cities}")
-    #print(f"Pheromone Matrix: {pheromone_matrix}")
-    #print(f"Distances: {distances}")
-    #print(f"Alpha: {alpha}, Beta: {beta}")
     for city in range(num_cities):
         if city not in visited_cities:
             pheromone = pheromone_matrix[current_city][city] ** alpha
@@ -121,7 +116,7 @@ def ant_colony_optimization(ttp, num_ants, alpha, beta, evaporation_rate, q, ite
 
     return best_tour, best_packing_list, best_fitness
 
-def process_ttp_instances_results_ACO( input_files,output_file):
+def process_ttp_instances_results_ACO( input_folder,output_file):
     results = []
     for filename in os.listdir(input_folder):
         if filename.endswith('.json'):
@@ -182,13 +177,4 @@ if __name__ == "__main__":
             output_files.append(output_file)
     parallel_process_ttp(input_folders, output_files)
 
-    # Example usage
-    #ttp = Hillclimber_TSP_swaping.load_json('problem_instances_ttp/json_files_TTP_instances_20_items_20/traveling_thief_problem_cities_20_items_20_1.json')
-    #C:\Users\ccroo\OneDrive\Bureaublad\CS-Thesis-Code\problem_instances_ttp\json_files_TTP_instances_20_items_20\traveling_thief_problem_cities_20_items_20_1.json
-    #best_tour, best_packing_list, best_fitness = ant_colony_optimization(
-    #    ttp, num_ants=40, alpha=1, beta=2, evaporation_rate=0.5, q=100, iterations=100
-    #)
 
-    #print(f"Best Tour: {best_tour}")
-    #print(f"Best Packing List: {best_packing_list}")
-    #print(f"Best Fitness: {best_fitness}")
