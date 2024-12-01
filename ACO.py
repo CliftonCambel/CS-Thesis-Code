@@ -122,7 +122,20 @@ def ant_colony_optimization(ttp, num_ants, alpha, beta, evaporation_rate, q, ite
 
 def process_ttp_instances_results_ACO( input_files,output_file):
     results = []
-    problem_instances=Iteration_search.load_iteration_results(input_files)
+        # Load and parse problem instances
+    problem_instances = []
+    for input_file in input_files:
+        if os.path.isdir(input_file):  # If input_file is a directory
+            for filename in os.listdir(input_file):
+                file_path = os.path.join(input_file, filename)
+                if filename.endswith('.json'):
+                    try:
+                        with open(file_path, 'r') as f:
+                            problem_instance = json.load(f)
+                            problem_instance['file_name'] = file_path  # Attach file name
+                            problem_instances.append(problem_instance)
+                    except Exception as e:
+                        print(f"Error loading file {file_path}: {e}")
     for idx, problem_instance in enumerate(problem_instances, start=1):
         filename_problem_instance = problem_instance.get('file_name', 'Unknown')
         start_time = time.time()
