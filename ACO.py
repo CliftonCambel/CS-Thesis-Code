@@ -123,31 +123,11 @@ def ant_colony_optimization(ttp, num_ants, alpha, beta, evaporation_rate, q, ite
 
 def process_ttp_instances_results_ACO( input_files,output_file):
     results = []
-    problem_instances = []
-    
-    # Load and validate problem instances
-    for input_file in input_files:
-        if os.path.isdir(input_file):
-            for filename in os.listdir(input_file):
-                file_path = os.path.join(input_file, filename)
-                if filename.endswith('.json'):
-                    try:
-                        with open(file_path, 'r') as f:
-                            problem_instance = json.load(f)
-                            problem_instance['file_name'] = file_path
-                            required_keys = ["cities", "items", "distances"]
-                            if all(key in problem_instance for key in required_keys):
-                                problem_instances.append(problem_instance)
-                            else:
-                                print(f"Missing keys in file: {file_path}")
-                    except Exception as e:
-                        print(f"Error loading file {file_path}: {e}")
-                        continue
-    
-    # Process each instance
-    for idx, problem_instance in enumerate(problem_instances, start=1):
-        filename_problem_instance = problem_instance['file_name']
-        try:
+    for filename in os.listdir(input_folder):
+        if filename.endswith('.json'):
+            with open(os.path.join(input_folder, filename), 'r') as f:
+                problem_instance = json.load(f)
+            start_time = time.time()
             num_ants = max(10, len(problem_instance["cities"]))
             total_item_value = sum(item["value"] for item in problem_instance["items"])
             q_value = 0.1 * total_item_value
@@ -165,13 +145,13 @@ def process_ttp_instances_results_ACO( input_files,output_file):
                 'new_OB_value': best_value,
                 'computing_time': computing_time
             })
-        except Exception as e:
-            print(f"Error processing instance {filename_problem_instance}: {e}")
-            continue
-        
-        # Save periodically
-        if idx % 10 == 0 or idx == len(problem_instances):
-            Hillclimber_TSP_swaping.save_to_json(results, output_file)
+
+    Hillclimber_TSP_swaping.save_to_json(results, output_file)
+
+
+    
+    # Process each instance
+
 
 def parallel_process_ttp(input_folders,output_files):
     try:
