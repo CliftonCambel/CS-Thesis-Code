@@ -139,7 +139,7 @@ def process_ttp_instances_results_ACO( input_files,output_file):
             computing_time = end_time - start_time
             
             results.append({
-                'filename': filename_problem_instance,
+                'filename': filename,
                 'best_new_tour': best_tour,
                 'optimized_packinglist': best_packing_list,
                 'new_OB_value': best_value,
