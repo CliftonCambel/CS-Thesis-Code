@@ -123,38 +123,54 @@ def ant_colony_optimization(ttp, num_ants, alpha, beta, evaporation_rate, q, ite
 
 def process_ttp_instances_results_ACO( input_files,output_file):
     results = []
-        # Load and parse problem instances
     problem_instances = []
+    
+    # Load and validate problem instances
     for input_file in input_files:
-        if os.path.isdir(input_file):  # If input_file is a directory
+        if os.path.isdir(input_file):
             for filename in os.listdir(input_file):
                 file_path = os.path.join(input_file, filename)
                 if filename.endswith('.json'):
                     try:
                         with open(file_path, 'r') as f:
                             problem_instance = json.load(f)
-                            problem_instance['file_name'] = file_path  # Attach file name
-                            problem_instances.append(problem_instance)
+                            problem_instance['file_name'] = file_path
+                            required_keys = ["cities", "items", "distances"]
+                            if all(key in problem_instance for key in required_keys):
+                                problem_instances.append(problem_instance)
+                            else:
+                                print(f"Missing keys in file: {file_path}")
                     except Exception as e:
                         print(f"Error loading file {file_path}: {e}")
+                        continue
+    
+    # Process each instance
     for idx, problem_instance in enumerate(problem_instances, start=1):
-        filename_problem_instance = problem_instance.get('file_name', 'Unknown')
-        start_time = time.time()
-        num_ants_range = len(problem_instance["cities"])
-        #num_ants_range = [max(1, num_cities // 2), num_cities, 2 * num_cities]
-        total_item_value = sum(item["value"] for item in problem_instance["items"])
-        q_value = 0.1 * total_item_value  
-        best_tour, best_packing_list,best_value = ant_colony_optimization(problem_instance,num_ants_range, alpha=1, beta=2, evaporation_rate=0.5, q=q_value, iterations=100)
-        end_time = time.time()
-        computing_time = end_time - start_time
-        results.append({
+        filename_problem_instance = problem_instance['file_name']
+        try:
+            num_ants = max(10, len(problem_instance["cities"]))
+            total_item_value = sum(item["value"] for item in problem_instance["items"])
+            q_value = 0.1 * total_item_value
+            start_time = time.time()
+            best_tour, best_packing_list, best_value = ant_colony_optimization(
+                problem_instance, num_ants, alpha=1, beta=2, evaporation_rate=0.5, q=q_value, iterations=100
+            )
+            end_time = time.time()
+            computing_time = end_time - start_time
+            
+            results.append({
                 'filename': filename_problem_instance,
                 'best_new_tour': best_tour,
-                'optimized_packinglist':best_packing_list,
+                'optimized_packinglist': best_packing_list,
                 'new_OB_value': best_value,
                 'computing_time': computing_time
             })
-        if idx % 100 == 0 or idx == len(problem_instances):
+        except Exception as e:
+            print(f"Error processing instance {filename_problem_instance}: {e}")
+            continue
+        
+        # Save periodically
+        if idx % 10 == 0 or idx == len(problem_instances):
             Hillclimber_TSP_swaping.save_to_json(results, output_file)
 
 def parallel_process_ttp(input_folders,output_files):
