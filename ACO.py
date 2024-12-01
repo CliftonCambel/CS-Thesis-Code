@@ -128,7 +128,7 @@ def process_ttp_instances_results_ACO( input_files,output_file):
         start_time = time.time()
         num_ants_range = len(problem_instance["cities"])
         #num_ants_range = [max(1, num_cities // 2), num_cities, 2 * num_cities]
-        total_item_value = sum(item["value"] for item in ttp["items"])
+        total_item_value = sum(item["value"] for item in problem_instance["items"])
         q_value = 0.1 * total_item_value  
         best_tour, best_packing_list,best_value = ant_colony_optimization(problem_instance,num_ants_range, alpha=1, beta=2, evaporation_rate=0.5, q=q_value, iterations=100)
         end_time = time.time()
