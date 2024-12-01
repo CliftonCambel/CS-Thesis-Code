@@ -6,6 +6,7 @@ import os
 from multiprocessing import Pool, cpu_count
 import time
 import Iteration_search
+import json
 
 def initialize_pheromone(ttp):
     num_cities = len(ttp['cities'])
