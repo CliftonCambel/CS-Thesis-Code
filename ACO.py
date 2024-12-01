@@ -143,7 +143,7 @@ def process_ttp_instances_results_ACO( input_files,output_file):
         if idx % 100 == 0 or idx == len(problem_instances):
             Hillclimber_TSP_swaping.save_to_json(results, output_file)
 
-def parallel_process_ttp(input_files,output_files):
+def parallel_process_ttp(input_folders,output_files):
     try:
         num_tasks = len(list(zip(output_files)))
         cpu_count_sys = cpu_count()
