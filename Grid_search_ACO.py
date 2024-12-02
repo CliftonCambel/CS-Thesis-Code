@@ -5,6 +5,7 @@ import os
 import Hillclimber_TSP_swaping
 from multiprocessing import Pool, cpu_count
 import json
+import time
 
 
 
@@ -17,36 +18,32 @@ def load_problem_instances(base_dir, size_group_dir):
 
 def run_aco_on_instance(args):
     """Run ACO on a single problem instance."""
+    start_time = time.time()
     ttp, params = args
     num_ants, alpha, beta, evaporation_rate, q_percentage, iterations = params
     total_item_value = sum(item["value"] for item in ttp["items"])
     q = q_percentage * total_item_value
 
     # Run ACO and return fitness
-    _, _, fitness = ACO.ant_colony_optimization(
+    best_tour, best_packing_list, fitness = ACO.ant_colony_optimization(
         ttp, num_ants=num_ants, alpha=alpha, beta=beta,
         evaporation_rate=evaporation_rate, q=q, iterations=iterations
     )
-    return fitness
+    end_time = time.time()
+    computing_time = end_time - start_time
+    return best_tour, best_packing_list,fitness
 
-#def calculate_variance(fitness_scores):
-#    """Calculate variance of fitness scores."""
-#    mean = sum(fitness_scores) / len(fitness_scores)
-#    variance = sum((x - mean) ** 2 for x in fitness_scores) / len(fitness_scores)
-#    return variance
+
 
 def grid_search_ACO():
     # Parameter ranges
-    alpha_range = [0.5, 1.5]
-    beta_range = [1.0, 3.0]
+    alpha_range = [0.5, 1.5]                #original run was Alpha[0.5, 1.5]
+    beta_range = [1.0, 3.0]                 #original run was Beta [1.0, 3.0]
     evaporation_rate_range = [0.3, 0.7]
     q_range = [0.1, 0.2]
     iterations_range = [50, 100]
 
 
-    # All parameter combinations
-    #parameter_grid = list(itertools.product(num_ants_range, alpha_range, beta_range, evaporation_rate_range, q_range))
-    # Global parameter grid
     global_parameter_grid = list(itertools.product(
         alpha_range, beta_range, evaporation_rate_range, q_range, iterations_range
     ))
@@ -79,7 +76,7 @@ def grid_search_ACO():
     problem_files = {group: load_problem_instances(base_dir, dir_name) for group, dir_name in size_groups.items()}
 
     sampled_instances = {
-        group: random.sample(files, k=min(len(files), 5)) for group, files in problem_files.items()
+        group: random.sample(files, k=min(len(files), 5)) for group, files in problem_files.items()#5 was the test, now do 1000
     }
 
     sampled_problems = {
@@ -108,7 +105,7 @@ def grid_search_ACO():
             num_cores = min(cpu_count_sys, len(args_list))
             #print (len(args_list))
             with Pool(num_cores) as pool:
-                fitness_scores = pool.map(run_aco_on_instance, args_list)
+                _,_,fitness_scores = pool.map(run_aco_on_instance, args_list)
 
             # Record results
             for (params, fitness) in zip(args_list, fitness_scores):

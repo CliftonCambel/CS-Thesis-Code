@@ -132,7 +132,7 @@ def process_ttp_instances_results_ACO( input_folder,output_file):
             )
             end_time = time.time()
             computing_time = end_time - start_time
-            
+            #error somewhere here that kills the results.
             results.append({
                 'filename': filename,
                 'best_new_tour': best_tour,
