@@ -31,7 +31,7 @@ def run_aco_on_instance(args):
     )
     end_time = time.time()
     computing_time = end_time - start_time
-    return best_tour, best_packing_list,fitness
+    return computing_time,best_tour, best_packing_list,fitness
 
 
 
@@ -39,9 +39,9 @@ def grid_search_ACO():
     # Parameter ranges
     alpha_range = [0.5, 1.5]                #original run was Alpha[0.5, 1.5]
     beta_range = [1.0, 3.0]                 #original run was Beta [1.0, 3.0]
-    evaporation_rate_range = [0.3, 0.7]
-    q_range = [0.1, 0.2]
-    iterations_range = [50, 100]
+    evaporation_rate_range = [0.3, 0.7]     #original run was evaporation_rate_range [0.3, 0.7] 
+    q_range = [0.1, 0.2]                    #original run was q range [0.1, 0.2]   
+    iterations_range = [50, 100]            #original run was iterations_range = [50, 100]
 
 
     global_parameter_grid = list(itertools.product(
@@ -103,13 +103,15 @@ def grid_search_ACO():
             # Parallel execution
             cpu_count_sys = cpu_count()
             num_cores = min(cpu_count_sys, len(args_list))
-            #print (len(args_list))
+            # Run ACO instances in parallel
             with Pool(num_cores) as pool:
-                _,_,fitness_scores = pool.map(run_aco_on_instance, args_list)
+                results_from_pool = pool.map(run_aco_on_instance, args_list)
 
             # Record results
-            for (params, fitness) in zip(args_list, fitness_scores):
+            for (params, result) in zip(args_list, results_from_pool):
+                computing_time, best_tour, best_packing_list, fitness = result
                 ttp_params = params[1]
+    
                 results.append({
                     "group": group,
                     "num_ants": ttp_params[0],
@@ -118,8 +120,28 @@ def grid_search_ACO():
                     "evaporation_rate": ttp_params[3],
                     "q_percentage": ttp_params[4],
                     "iterations": ttp_params[5],
-                    "fitness": fitness
+                    "fitness": fitness,
+                    "computing_time": computing_time,  # Add computing time
+                    "best_tour": best_tour,           # Add best tour
+                    "best_packing_list": best_packing_list  # Add best packing list
                 })
+            #print (len(args_list))
+            #with Pool(num_cores) as pool:
+            #    computing_time,best_tour,best_packing_list,fitness_scores = pool.map(run_aco_on_instance, args_list)
+
+            # Record results
+            #for (params, fitness) in zip(args_list, fitness_scores):
+            #    ttp_params = params[1]
+            #    results.append({
+            #        "group": group,
+            #        "num_ants": ttp_params[0],
+            #        "alpha": ttp_params[1],
+            #        "beta": ttp_params[2],
+            #        "evaporation_rate": ttp_params[3],
+            #        "q_percentage": ttp_params[4],
+            #        "iterations": ttp_params[5],
+            #        "fitness": fitness
+            #    })
 
         # Save intermediate results to avoid data loss
         with open("aco_intermediate_results.json", "w") as f:
