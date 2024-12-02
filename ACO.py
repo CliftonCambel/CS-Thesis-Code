@@ -160,16 +160,16 @@ def parallel_process_ttp(input_folders,output_files):
 
 
 if __name__ == "__main__":
-    os.makedirs('tour_results/aco_results', exist_ok=True)
+    os.makedirs('tour_results/aco_results_test', exist_ok=True)
   #  input_folders_problem_instances = []
   #  input_folders_results_random = []
     input_folders = []
     output_files = []
 
-    for cities in range(20, 120, 20):
+    for cities in range(20, 40, 20): #return 40 to 120, remove the test from the folder names.
         for n in range(1, 5): 
             items = n * cities
-            name_directory = f'tour_results/aco_results/TTP_instances_{cities}_items_{items}'
+            name_directory = f'tour_results/aco_results_test/TTP_instances_{cities}_items_{items}'
             os.makedirs(name_directory, exist_ok=True)
             input_folder = f'problem_instances_ttp/json_files_TTP_instances_{cities}_items_{items}'
             output_file=f'{name_directory}/results_aco_{cities}_items_{items}.json'
