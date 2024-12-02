@@ -169,5 +169,5 @@ if __name__ == "__main__":
         print(f"Best parameters for {group}: {params}")
 
     # Save results to a JSON file for later analysis
-    with open("aco_grid_search_results.json", "w") as f:
+    with open("aco_grid_search_results_p.json", "w") as f:
         json.dump(results, f)
