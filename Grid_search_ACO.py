@@ -8,6 +8,17 @@ import json
 import time
 
 
+def custom_serializer(obj):
+    """
+    Custom serializer to handle non-JSON serializable objects like numpy types.
+    """
+    if isinstance(obj, (np.integer, int)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, float)):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    raise TypeError(f"Type {type(obj)} not serializable")
 
 # Load problem instance file paths
 def load_problem_instances(base_dir, size_group_dir):
@@ -114,16 +125,16 @@ def grid_search_ACO():
     
                 results.append({
                     "group": group,
-                    "num_ants": ttp_params[0],
-                    "alpha": ttp_params[1],
-                    "beta": ttp_params[2],
-                    "evaporation_rate": ttp_params[3],
-                    "q_percentage": ttp_params[4],
-                    "iterations": ttp_params[5],
-                    "fitness": fitness,
-                    "computing_time": computing_time,  # Add computing time
-                    "best_tour": best_tour,           # Add best tour
-                    "best_packing_list": best_packing_list  # Add best packing list
+                    "num_ants": int(ttp_params[0]),
+                    "alpha": float(ttp_params[1]),
+                    "beta": float(ttp_params[2]),
+                    "evaporation_rate": float(ttp_params[3]),
+                    "q_percentage": float(ttp_params[4]),
+                    "iterations": int(ttp_params[5]),
+                    "fitness": float(fitness),
+                    "computing_time": float(computing_time),
+                    "best_tour": list(map(int, best_tour)),
+                    "best_packing_list": list(map(int, best_packing_list))
                 })
             #print (len(args_list))
             #with Pool(num_cores) as pool:
@@ -145,7 +156,7 @@ def grid_search_ACO():
 
         # Save intermediate results to avoid data loss
         with open("aco_intermediate_results.json", "w") as f:
-            json.dump(results, f)
+            json.dump(results, f, default=custom_serializer)
 
     return results
 
@@ -170,4 +181,4 @@ if __name__ == "__main__":
 
     # Save results to a JSON file for later analysis
     with open("aco_grid_search_results_p.json", "w") as f:
-        json.dump(results, f)
+        json.dump(results, f, default=custom_serializer)
