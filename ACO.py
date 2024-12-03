@@ -8,6 +8,19 @@ import time
 import Iteration_search
 import json
 
+
+def custom_serializer(obj):
+    """
+    Custom serializer to handle non-JSON serializable objects like numpy types.
+    """
+    if isinstance(obj, (np.integer, int)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, float)):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    raise TypeError(f"Type {type(obj)} not serializable")
+
 def initialize_pheromone(ttp):
     num_cities = len(ttp['cities'])
     
@@ -156,10 +169,10 @@ def process_ttp_instances_results_ACO(input_folder, output_file):
                 # Append results for the current instance
                 results.append({
                     'filename': filename,
-                    'best_new_tour': best_tour,
-                    'optimized_packinglist': best_packing_list,
-                    'new_OB_value': best_value,
-                    'computing_time': computing_time
+                    'best_new_tour': list(map(int,best_tour)),
+                    'optimized_packinglist': list(map(int,best_packing_list)),
+                    'OB_value': float(best_value),
+                    'computing_time': float(computing_time)
                 })
 
         # Save all results for the current folder to the output file
@@ -193,7 +206,7 @@ if __name__ == "__main__":
     output_files = []
 
     for cities in range(20, 40, 20): #return 40 to 120, remove the test from the folder names.
-        for n in range(1, 5): 
+        for n in range(1, 2): 
             items = n * cities
             name_directory = f'tour_results/aco_results_test/TTP_instances_{cities}_items_{items}'
             os.makedirs(name_directory, exist_ok=True)
