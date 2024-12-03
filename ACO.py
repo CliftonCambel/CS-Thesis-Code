@@ -205,8 +205,8 @@ if __name__ == "__main__":
     input_folders = []
     output_files = []
 
-    for cities in range(20, 40, 20): #return 40 to 120, remove the test from the folder names.
-        for n in range(1, 2): 
+    for cities in range(20, 120, 20): #return 40 to 120, remove the test from the folder names.
+        for n in range(1, 5): 
             items = n * cities
             name_directory = f'tour_results/aco_results_test/TTP_instances_{cities}_items_{items}'
             os.makedirs(name_directory, exist_ok=True)
