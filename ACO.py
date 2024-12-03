@@ -141,7 +141,10 @@ def process_ttp_instances_results_ACO(input_folder, output_file):
                 num_ants = num_cities*2
                 total_item_value = sum(item["value"] for item in problem_instance["items"])
                 q_value = 0.1 * total_item_value
-                alpha=0.5,beta=3,evaporation_rate=0.3,iterations=100
+                alpha=0.5
+                beta=3
+                evaporation_rate=0.3
+                iterations=100
                 # Run ACO on the problem instance
                 best_tour, best_packing_list, best_value = ant_colony_optimization(
                     problem_instance, num_ants, alpha, beta, evaporation_rate, q_value, iterations
