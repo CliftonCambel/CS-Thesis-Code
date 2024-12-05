@@ -48,11 +48,11 @@ def run_aco_on_instance(args):
 
 def grid_search_ACO():
     # Parameter ranges
-    alpha_range = [0.5]                #original run was Alpha[0.5, 1.5]
-    beta_range = [3.0]                 #original run was Beta [1.0, 3.0]
-    evaporation_rate_range = [0.3]     #original run was evaporation_rate_range [0.3, 0.7] 
-    q_range = [0.1]                    #original run was q range [0.1, 0.2]   
-    iterations_range = [ 100]            #original run was iterations_range = [50, 100]
+    alpha_range = [0.5, 1.0, 1.5]                #original run was Alpha[0.5, 1.5]
+    beta_range = [1.0, 2.0, 3.0]                #original run was Beta [1.0, 3.0]
+    evaporation_rate_range = [0.3, 0.5, 0.7]     #original run was evaporation_rate_range [0.3, 0.7] 
+    q_range = [0.5, 0.1, 0.2]                    #original run was q range [0.1, 0.2]   
+    iterations_range = [50,75 ,100]            #original run was iterations_range = [50, 100]
 
 
     global_parameter_grid = list(itertools.product(
@@ -102,7 +102,7 @@ def grid_search_ACO():
     for group, problems in sampled_problems.items():
         for ttp in problems:
             num_cities = len(ttp["cities"])
-            num_ants_range = [2 * num_cities]  #original [max(1, num_cities // 2), num_cities, 2 * num_cities]
+            num_ants_range = [max(1, num_cities // 2), num_cities, 2 * num_cities]  #original [max(1, num_cities // 2), num_cities, 2 * num_cities]
 
             # Batch parallel processing
             args_list = [
@@ -180,5 +180,5 @@ if __name__ == "__main__":
         print(f"Best parameters for {group}: {params}")
 
     # Save results to a JSON file for later analysis
-    with open("aco_grid_search_results_p.json", "w") as f:
+    with open("aco_grid_search_results_2nd.json", "w") as f:
         json.dump(results, f, default=custom_serializer)
