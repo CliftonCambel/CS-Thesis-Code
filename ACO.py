@@ -10,9 +10,6 @@ import json
 
 
 def custom_serializer(obj):
-    """
-    Custom serializer to handle non-JSON serializable objects like numpy types.
-    """
     if isinstance(obj, (np.integer, int)):
         return int(obj)
     elif isinstance(obj, (np.floating, float)):
@@ -106,7 +103,6 @@ def update_pheromones(pheromone_cities, pheromone_items, solutions, evaporation_
             for item in packing_list:
                 pheromone_items[item] += q * fitness
 
-    # Optional: Clamp pheromone levels to prevent extremes
     pheromone_cities = np.clip(pheromone_cities, 1e-5, 100)  # Adjust upper bound as needed
     pheromone_items = np.clip(pheromone_items, 1e-5, 100)    # Adjust upper bound as needed
 
