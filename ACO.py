@@ -44,7 +44,7 @@ def calculate_probabilities(current_city, visited_cities, pheromone_matrix, dist
     for city in range(num_cities):
         if city not in visited_cities:
             pheromone = pheromone_matrix[current_city][city] ** alpha
-            distance = 1 / (distances[current_city][city] + 1e-5) ** beta  # Avoid division by zero
+            distance = 1 / (distances[current_city][city] + 1e-5) ** beta  # Avoid division by zero by using 1e-5
             probabilities.append(pheromone * distance)
         else:
             probabilities.append(0)  # Already visited cities get 0 probability
@@ -94,7 +94,7 @@ def update_pheromones(pheromone_cities, pheromone_items, solutions, evaporation_
 
     # Deposit pheromones based on solutions
     for tour, packing_list, fitness in solutions:
-        if fitness > 0:  # Only deposit pheromones for positive fitness
+        if fitness > 0:  # Only put pheromones for positive fitness
             # Update pheromones for cities
             for i in range(len(tour) - 1):
                 pheromone_cities[tour[i]][tour[i + 1]] += q * fitness
