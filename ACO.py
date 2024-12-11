@@ -162,7 +162,6 @@ def process_ttp_instances_results_ACO(input_folder, output_file):
                 end_time = time.time()
                 computing_time = end_time - start_time
 
-                # Append results for the current instance
                 results.append({
                     'filename': filename,
                     'best_new_tour': list(map(int,best_tour)),
