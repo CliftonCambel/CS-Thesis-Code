@@ -10,10 +10,12 @@ from tqdm import tqdm
 from functools import partial
 import math
 
-#first round initial_temperature=1000, coolingrate 0.99
-#second round initial_temperature=5000, coolingrate 0.999
-#third round initial_temperature=10000, coolingrate 0.9999
-def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperature=10000, cooling_rate=0.9999):
+#first round initial_temperature=1000, coolingrate 0.99, iterations=10000
+#second round initial_temperature=5000, coolingrate 0.999, iterations=10000
+#third round initial_temperature=10000, coolingrate 0.9999, iterations=10000
+#fourth round initial_temperature=1000, coolingrate 0.99, iterations=100000
+
+def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperature=1000, cooling_rate=0.99):
     cities = ttp['cities']
     items = ttp['items']
     item_dict = {item['id']: item for item in items}  # Precompute item lookup
