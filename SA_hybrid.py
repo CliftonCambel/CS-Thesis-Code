@@ -103,7 +103,7 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
 
 def process_ttp_instances_results_SA_hybride( input_folders_results_random, output_file):
     results = []
-    iterations = 10000
+    iterations = 100000
     random_results=Iteration_search.load_iteration_results(input_folders_results_random)
     for idx, result in enumerate(random_results, start=1):
         filename_problem_instance = result['problem_instance_filename']
