@@ -2,7 +2,7 @@
 #SBATCH -J run_grid_aco
 #SBATCH -N 1                        
 #SBATCH --ntasks=1                       
-#SBATCH --cpus-per-task=16               
+#SBATCH --cpus-per-task=32               
 #SBATCH -p rome                 
 #SBATCH -t 1:00:00                  
 #SBATCH --mail-type=BEGIN,END            
