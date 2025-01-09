@@ -39,7 +39,25 @@ def split_json_files(source_dir, target_dir_base):
 
 # Example usage
 if __name__ == "__main__":
-    source_directory = "path_to_source_directory"  # Replace with your source directory path
-    target_directory_base = "path_to_target_directory/target_dir"  # Replace with your base target directory path
+    name_directory = "problem_instances_ttp_100c"
+    os.makedirs(name_directory, exist_ok=True)
+
+    source_directory = "problem_instances_ttp/json_files_TTP_instances_100_items_100"  # Replace with your base target directory path
+    target_directory_base = f'{name_directory}/json_files_TTP_instances_100_items_100'
+
+    split_json_files(source_directory, target_directory_base)
+
+    source_directory = "problem_instances_ttp/json_files_TTP_instances_100_items_200"  # Replace with your base target directory path
+    target_directory_base = f'{name_directory}/json_files_TTP_instances_100_items_200'
+
+    split_json_files(source_directory, target_directory_base)
+
+    source_directory = "problem_instances_ttp/json_files_TTP_instances_100_items_300"  # Replace with your base target directory path
+    target_directory_base = f'{name_directory}/json_files_TTP_instances_100_items_300'
+
+    split_json_files(source_directory, target_directory_base)
+
+    source_directory = "problem_instances_ttp/json_files_TTP_instances_100_items_400"  # Replace with your base target directory path
+    target_directory_base = f'{name_directory}/json_files_TTP_instances_100_items_400'
 
     split_json_files(source_directory, target_directory_base)
