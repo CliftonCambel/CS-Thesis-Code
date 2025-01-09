@@ -9,7 +9,7 @@ if __name__ == "__main__":
     input_folders = []
     output_files = []
 
-    for n in range(1,5): #return 40 to 120, remove the test from the folder names.
+    for n in range(1, 5): 
         for i in range(1, 5): 
             items = n * 100
             name_directory = f'tour_results/aco_results_100c/TTP_instances_100_items_{items}_{i}'
