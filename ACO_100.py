@@ -176,6 +176,7 @@ def process_ttp_instances_results_ACO(input_folder, output_file):
         print(f"Error processing folder {input_folder}: {e}")
 
 
+
 def parallel_process_ttp(input_folders,output_files):
     try:
         num_tasks = len(list(zip(output_files)))
