@@ -2,9 +2,9 @@
 #SBATCH -J run_ACO_100
 #SBATCH -N 1                        
 #SBATCH --ntasks=1                       
-#SBATCH --cpus-per-task=32               
+#SBATCH --cpus-per-task=16               
 #SBATCH -p rome                 
-#SBATCH -t 00:10:00                  
+#SBATCH -t 119:00:00                  
 #SBATCH --mail-type=BEGIN,END            
 #SBATCH --mail-user=c.c.roozendal@student.vu.nl  
 
