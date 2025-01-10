@@ -1,4 +1,3 @@
-import ACO
 import random
 import numpy as np
 import TTP_random_tour_and_packing_list
