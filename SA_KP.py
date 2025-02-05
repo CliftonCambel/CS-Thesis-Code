@@ -71,9 +71,7 @@ def simulated_annealing_KP(ttp, random_sample, iterations, initial_temperature=1
         # Update temperature
         temperature *= cooling_rate
 
-        # Optional: Stop if the temperature is too low
-        #if temperature < 1e-3:
-        #    break
+    
 
     return best_tour, best_knapsack, best_fitness
 
