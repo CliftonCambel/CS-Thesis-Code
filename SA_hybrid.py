@@ -95,10 +95,6 @@ def simulated_annealing_hybrid(ttp, random_sample, iterations, initial_temperatu
         # Decrease the temperature
         temperature *= cooling_rate
 
-        # Optional: Stop early if the temperature is very low
-        #if temperature < 1e-3:
-        #    break
-
     return best_tour, best_knapsack, best_fitness
 
 def process_ttp_instances_results_SA_hybride( input_folders_results_random, output_file):

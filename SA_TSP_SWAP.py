@@ -66,9 +66,6 @@ def simulated_annealing_tsp_swap(ttp, random_sample, iterations, initial_tempera
         # Cool the temperature
         temperature *= cooling_rate
 
-        # Optional: Stop early if the temperature is very low
-        #if temperature < 1e-3:
-        #    break
 
     return best_tour, best_value
 
