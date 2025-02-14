@@ -88,7 +88,7 @@ def grid_search_ACO():
     problem_files = {group: load_problem_instances(base_dir, dir_name) for group, dir_name in size_groups.items()}
 
     sampled_instances = {
-        group: random.sample(files, k=min(len(files), 5)) for group, files in problem_files.items()#5 was the test, now do 1000
+        group: random.sample(files, k=min(len(files), 5)) for group, files in problem_files.items()#5 was the test
     }
 
     sampled_problems = {
