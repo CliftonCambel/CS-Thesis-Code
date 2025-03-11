@@ -62,13 +62,10 @@ if __name__ == "__main__":
             #input_folder = 'name_directory'  # Folder where iteration results are stored
             output_file = f'tour_results/best_random_results/best_random_results_cities_{cities}_items_{items}.json'
 
-            # Step 1: Load all iteration results from the saved JSON files
             all_results = load_iteration_results(input_folder)
 
-            # Step 2: Find the best OB value for each problem instance
             best_results = get_best_ob_value_from_existing_files(all_results)
 
-            # Step 3: Save only the best OB values to a new JSON file
             save_best_results_to_json(best_results, output_file)
 
             print(f"Best OB values saved to {output_file}")
